@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <title>Admin Dashboard - TKA Kecamatan</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <style>
+        body { background-color: #f4f6f9; font-size: 14px; }
+        .sidebar { min-height: 100vh; background: #343a40; color: white; }
+        .nav-link { color: #ccc; }
+        .nav-link:hover, .nav-link.active { color: white; background: #495057; }
+        .card-stat { border: none; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .status-selesai { background-color: #d4edda; color: #155724; padding: 2px 8px; border-radius: 4px; font-weight: bold;}
+        .status-belum { background-color: #f8d7da; color: #721c24; padding: 2px 8px; border-radius: 4px; }
+        
+        /* Modifikasi Cetak */
+        @media print {
+            .no-print, .sidebar, .dataTables_filter, .dataTables_length, .pagination { display: none !important; }
+            .content-wrapper { margin: 0; padding: 0; }
+            .card { border: none; shadow: none; }
+            table { width: 100%; border-collapse: collapse; }
+            th, td { border: 1px solid black !important; font-size: 12px; }
+            /* Paksa ganti page setiap ganti sekolah (jika pakai grouping, opsional) */
+            .page-break { page-break-after: always; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-2 sidebar p-3 no-print">
+            <h5 class="mb-4"><i class="fas fa-user-shield"></i> PROKTOR TKA</h5>
+            <div class="mb-3">
+                <label class="small text-muted">Password Admin</label>
+                <input type="password" id="admin-pass" class="form-control form-control-sm" placeholder="Masukkan Pass..." value="rahasia123">
+            </div>
+            <hr>
+            <ul class="nav flex-column">
+                <li class="nav-item mb-2">
+                    <a href="#" class="nav-link active" onclick="loadData()"><i class="fas fa-sync-alt"></i> Refresh Data</a>
+                </li>
+                <li class="nav-item mb-2">
+                    <a href="#" class="nav-link" data-bs-toggle="modal" data-bs-target="#modalSekoci"><i class="fas fa-life-ring"></i> Input Sekoci (Manual)</a>
+                </li>
+                <li class="nav-item mt-4">
+                    <button class="btn btn-success w-100 btn-sm" onclick="window.print()"><i class="fas fa-print"></i> Cetak Laporan</button>
+                </li>
+            </ul>
+        </div>
+
+        <div class="col-md-10 p-4 content-wrapper">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h3>Monitoring Peserta</h3>
+                <div class="no-print">
+                    <select id="filter-sekolah" class="form-select" onchange="filterTable()">
+                        <option value="">-- Semua Sekolah --</option>
+                        </select>
+                </div>
+            </div>
+
+            <div class="row mb-4 no-print">
+                <div class="col-md-3">
+                    <div class="card card-stat bg-primary text-white p-3">
+                        <h3><span id="stat-total">0</span></h3>
+                        <small>Total Peserta</small>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card card-stat bg-success text-white p-3">
+                        <h3><span id="stat-selesai">0</span></h3>
+                        <small>Selesai Mengerjakan</small>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card card-stat bg-warning text-dark p-3">
+                        <h3><span id="stat-belum">0</span></h3>
+                        <small>Belum/Sedang Ujian</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card p-3">
+                <div class="table-responsive">
+                    <table id="tabel-monitor" class="table table-hover w-100">
+                        <thead>
+                            <tr class="table-dark">
+                                <th>No</th>
+                                <th>NISN</th>
+                                <th>Nama Peserta</th>
+                                <th>Sekolah</th>
+                                <th>Waktu Submit</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody-monitor">
+                            <tr><td colspan="6" class="text-center">Klik 'Refresh Data' untuk memuat...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalSekoci" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title">Input Jawaban Darurat (Sekoci)</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p class="small">Gunakan fitur ini jika siswa gagal submit karena koneksi. Minta siswa kirim/foto <b>KODE PENYELAMAT</b> yang muncul di layar error mereka.</p>
+                <div class="mb-3">
+                    <label>Paste Kode Base64 di sini:</label>
+                    <textarea class="form-control" id="input-base64" rows="5" placeholder="eyIxIjoiQSIs..."></textarea>
+                </div>
+                <div id="preview-sekoci" class="alert alert-info d-none">
+                    <b>Preview:</b> <span id="nama-sekoci"></span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="decodePreview()">Cek Kode</button>
+                <button type="button" class="btn btn-primary" onclick="kirimManual()" id="btn-kirim-sekoci" disabled>Kirim ke Server</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
+
+<script>
+    // URL API YANG SAMA DENGAN UJIAN
+    const API_URL = "https://script.google.com/macros/s/AKfycbyWJx6CT3JTr-Of1hwuTDavdXyAjFZQxTxQwnPS466iR8-lWQantSuOtAlUFxXx0DFo/exec"; 
+
+    let table; // Variabel DataTable
+    let rawData = []; // Data mentah
+
+    $(document).ready(function() {
+        // Inisialisasi DataTable Kosong
+        table = $('#tabel-monitor').DataTable({
+            language: { url: '//cdn.datatables.net/plug-ins/1.13.4/i18n/id.json' }
+        });
+    });
+
+    function loadData() {
+        let pass = $('#admin-pass').val();
+        
+        $('#tbody-monitor').html('<tr><td colspan="6" class="text-center"><i class="fas fa-spinner fa-spin"></i> Mengambil data dari server...</td></tr>');
+
+        $.ajax({
+            url: API_URL,
+            type: "POST",
+            data: { action: "admin_monitor", password: pass },
+            dataType: "json",
+            success: function(resp) {
+                if(resp.status === "SUKSES") {
+                    renderTable(resp.data);
+                } else {
+                    alert(resp.pesan);
+                    $('#tbody-monitor').html('');
+                }
+            },
+            error: function() {
+                alert("Gagal koneksi ke server.");
+            }
+        });
+    }
+
+    function renderTable(data) {
+        rawData = data;
+        let rows = [];
+        let total = data.length;
+        let selesai = 0;
+        let sekolahSet = new Set();
+
+        data.forEach((item, index) => {
+            sekolahSet.add(item.sekolah);
+            if(item.status === "Selesai") selesai++;
+
+            let badge = item.status === "Selesai" 
+                ? `<span class="status-selesai">Selesai</span>` 
+                : `<span class="status-belum">Belum</span>`;
+
+            rows.push([
+                index + 1,
+                item.nisn,
+                item.nama,
+                item.sekolah,
+                item.waktu,
+                badge
+            ]);
+        });
+
+        // Update Statistik
+        $('#stat-total').text(total);
+        $('#stat-selesai').text(selesai);
+        $('#stat-belum').text(total - selesai);
+
+        // Update Dropdown Sekolah
+        let filterHtml = '<option value="">-- Semua Sekolah --</option>';
+        sekolahSet.forEach(s => {
+            filterHtml += `<option value="${s}">${s}</option>`;
+        });
+        $('#filter-sekolah').html(filterHtml);
+
+        // Update DataTable
+        table.clear().rows.add(rows).draw();
+    }
+
+    // Filter Sekolah (Custom Search DataTables)
+    function filterTable() {
+        let val = $('#filter-sekolah').val();
+        table.column(3).search(val).draw(); // Kolom index 3 adalah 'Sekolah'
+    }
+
+    // --- LOGIKA SEKOCI (INPUT MANUAL) ---
+    let payloadSekoci = null;
+
+    function decodePreview() {
+        let base64 = $('#input-base64').val().trim();
+        try {
+            let jsonString = atob(base64); // Decode Base64
+            payloadSekoci = JSON.parse(jsonString); // Parse JSON
+            
+            $('#nama-sekoci').text(`${payloadSekoci.nama} (${payloadSekoci.sekolah})`);
+            $('#preview-sekoci').removeClass('d-none');
+            $('#btn-kirim-sekoci').prop('disabled', false);
+        } catch (e) {
+            alert("Kode tidak valid! Pastikan copas semua karakter.");
+            $('#preview-sekoci').addClass('d-none');
+        }
+    }
+
+    function kirimManual() {
+        if(!payloadSekoci) return;
+
+        $('#btn-kirim-sekoci').text('Mengirim...').prop('disabled', true);
+
+        // Kirim ke endpoint 'admin_input_manual' atau 'submit' biasa
+        // Kita pakai 'submit' biasa saja karena payloadnya sama
+        // Tapi kita bungkus lagi agar masuk parameter
+        
+        $.ajax({
+            url: API_URL,
+            type: "POST",
+            data: { action: "admin_input_manual", data_jawaban: JSON.stringify(payloadSekoci) },
+            dataType: "json",
+            success: function(resp) {
+                if(resp.status === "OK") {
+                    alert("Berhasil diselamatkan!");
+                    $('#modalSekoci').modal('hide');
+                    $('#input-base64').val('');
+                    loadData(); // Refresh tabel
+                } else {
+                    alert("Gagal: " + resp.pesan);
+                }
+                $('#btn-kirim-sekoci').text('Kirim ke Server').prop('disabled', false);
+            }
+        });
+    }
+</script>
+
+</body>
+</html>
