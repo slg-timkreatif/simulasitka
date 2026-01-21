@@ -137,6 +137,7 @@
             <span class="d-none d-md-inline">| <span id="sekolah-display">Sekolah</span></span>
         </div>
         <div class="d-flex align-items-center">
+            <span class="badge badge-warning text-dark mr-3" id="label-mapel">MAPEL</span>
             <span class="font-control small" onclick="ubahFont(16)">A</span>
             <span class="font-control medium" onclick="ubahFont(20)">A+</span>
             <span class="font-control large" onclick="ubahFont(24)">A++</span>
@@ -244,7 +245,7 @@
     // ===============================================================
     // KONFIGURASI PENTING
     // ===============================================================
-    // PASTE URL Web App Google Apps Script Anda di bawah ini:
+    // PASTE URL Web App Google Apps Script Anda di sini:
     const API_URL = "https://script.google.com/macros/s/AKfycbyWJx6CT3JTr-Of1hwuTDavdXyAjFZQxTxQwnPS466iR8-lWQantSuOtAlUFxXx0DFo/exec"; 
     // ===============================================================
 
@@ -274,8 +275,13 @@
             success: function(resp) {
                 if(resp.status === "SUKSES") {
                     DATA_SISWA = resp.data;
+                    
+                    // SIMPAN KODE MAPEL DARI SERVER
+                    DATA_SISWA.kode_mapel = resp.data.kode_mapel;
+                    
                     PAKET_SOAL = resp.data.soal;
                     localStorage.setItem('current_nisn', DATA_SISWA.nisn);
+                    
                     siapkanUjian();
                 } else {
                     alert(resp.pesan);
@@ -298,6 +304,9 @@
 
         $('#nama-siswa-display').text(DATA_SISWA.nama);
         $('#sekolah-display').text(DATA_SISWA.sekolah);
+        
+        // Tampilkan Nama Mapel
+        $('#label-mapel').text(DATA_SISWA.mapel || "UJIAN");
 
         restoreSesiLokal(); // Restore Jawaban Anti-Nangis
         renderNavigasi();
@@ -530,6 +539,7 @@
             nisn: DATA_SISWA.nisn,
             nama: DATA_SISWA.nama,
             sekolah: DATA_SISWA.sekolah,
+            kode_mapel: DATA_SISWA.kode_mapel, // KIRIM KODE MAPEL KE SERVER
             jawaban: JAWABAN_SISWA
         };
 
