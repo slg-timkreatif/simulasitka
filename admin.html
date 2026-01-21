@@ -39,6 +39,7 @@
             #header-print { display: block !important; text-align: center; margin-bottom: 20px; border-bottom: 2px solid black; padding-bottom: 10px; }
             .status-selesai, .status-belum { border: 1px solid #000; -webkit-print-color-adjust: exact; }
             .text-success, .text-danger, .text-primary { color: black !important; font-weight: normal !important; }
+            .badge { border: 1px solid #000; color: black !important; font-weight: normal; }
         }
         #header-print { display: none; }
         
@@ -143,7 +144,7 @@
                             <th>Nama Peserta</th>
                             <th>Sekolah</th>
                             <th>Waktu Submit</th>
-                            <th class="text-center">NILAI</th>
+                            <th class="text-center">Mapel</th> <th class="text-center">NILAI</th>
                             <th class="text-center">Status</th>
                         </tr>
                     </thead>
@@ -206,7 +207,8 @@
 
 <script>
     // ==========================================
-    // URL WEB APP ANDA (PASTE DISINI)
+    // PASTE URL WEB APP GAS ANDA DI SINI
+    // ==========================================
     const API_URL = "https://script.google.com/macros/s/AKfycbyWJx6CT3JTr-Of1hwuTDavdXyAjFZQxTxQwnPS466iR8-lWQantSuOtAlUFxXx0DFo/exec"; 
     // ==========================================
 
@@ -216,7 +218,8 @@
     $(document).ready(function() {
         table = $('#tabel-monitor').DataTable({
             language: { url: '//cdn.datatables.net/plug-ins/1.13.4/i18n/id.json', emptyTable: "Data belum dimuat." },
-            columnDefs: [{ className: "text-center", targets: [0, 5, 6] }],
+            // Kolom Center: No(0), Mapel(5), Nilai(6), Status(7)
+            columnDefs: [{ className: "text-center", targets: [0, 5, 6, 7] }],
             pageLength: 50
         });
     });
@@ -277,7 +280,8 @@
                 item.nisn,
                 `<b>${item.nama}</b>`,
                 item.sekolah,
-                item.waktu,
+                item.waktu, // Sudah format simpel dari backend
+                `<span class="badge bg-info text-dark" style="font-size:0.9em">${item.mapel}</span>`, // KOLOM MAPEL
                 `<div class="${valColor} fw-bold fs-5">${item.nilai}</div>`,
                 badge
             ]);
