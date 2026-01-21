@@ -144,7 +144,8 @@
                             <th>Nama Peserta</th>
                             <th>Sekolah</th>
                             <th>Waktu Submit</th>
-                            <th class="text-center">Mapel</th> <th class="text-center">NILAI</th>
+                            <th class="text-center">Mapel</th>
+                            <th class="text-center">NILAI</th>
                             <th class="text-center">Status</th>
                         </tr>
                     </thead>
@@ -207,7 +208,7 @@
 
 <script>
     // ==========================================
-    // PASTE URL WEB APP GAS ANDA DI SINI
+    // PASTE URL WEB APP GAS ANDA DI SINI (WAJIB)
     // ==========================================
     const API_URL = "https://script.google.com/macros/s/AKfycbyWJx6CT3JTr-Of1hwuTDavdXyAjFZQxTxQwnPS466iR8-lWQantSuOtAlUFxXx0DFo/exec"; 
     // ==========================================
@@ -218,7 +219,6 @@
     $(document).ready(function() {
         table = $('#tabel-monitor').DataTable({
             language: { url: '//cdn.datatables.net/plug-ins/1.13.4/i18n/id.json', emptyTable: "Data belum dimuat." },
-            // Kolom Center: No(0), Mapel(5), Nilai(6), Status(7)
             columnDefs: [{ className: "text-center", targets: [0, 5, 6, 7] }],
             pageLength: 50
         });
@@ -240,7 +240,6 @@
             success: function(resp) {
                 btn.html(originalText).removeClass('disabled');
                 if(resp.status === "SUKSES") {
-                    // Berhasil Login & Ambil Data
                     renderTable(resp.data, resp.role, resp.sekolah);
                     
                     let roleLabel = (resp.role === "ADMIN_KECAMATAN") ? "Admin Kecamatan" : "Proktor SD";
@@ -272,17 +271,41 @@
 
             // Pewarnaan Nilai
             let valColor = "text-dark";
+            let nilaiDisplay = item.nilai;
+            
             if(item.nilai >= 70) valColor = "text-success";
             if(item.nilai < 70) valColor = "text-danger";
+            if(!item.nilai) nilaiDisplay = "-";
+
+            // --- PERBAIKAN FORMAT WAKTU (MESIN CUCI) ---
+            let waktuTampil = item.waktu;
+            // Deteksi jika format panjang / ISO / GMT
+            if (waktuTampil && (waktuTampil.includes("GMT") || waktuTampil.length > 20)) {
+                let d = new Date(waktuTampil);
+                if (!isNaN(d.getTime())) {
+                    let tgl = ("0" + d.getDate()).slice(-2);
+                    let bln = ("0" + (d.getMonth() + 1)).slice(-2);
+                    let thn = d.getFullYear();
+                    let jam = ("0" + d.getHours()).slice(-2);
+                    let mnt = ("0" + d.getMinutes()).slice(-2);
+                    let dtk = ("0" + d.getSeconds()).slice(-2);
+                    waktuTampil = `${tgl}-${bln}-${thn} ${jam}:${mnt}:${dtk}`;
+                }
+            }
+            // Bersihkan tanda petik jika ada
+            if(waktuTampil) waktuTampil = waktuTampil.replace(/'/g, ""); 
+            // ---------------------------------------------
+
+            let mapelDisplay = item.mapel ? item.mapel : "-";
 
             rows.push([
                 index + 1,
                 item.nisn,
                 `<b>${item.nama}</b>`,
                 item.sekolah,
-                item.waktu, // Sudah format simpel dari backend
-                `<span class="badge bg-info text-dark" style="font-size:0.9em">${item.mapel}</span>`, // KOLOM MAPEL
-                `<div class="${valColor} fw-bold fs-5">${item.nilai}</div>`,
+                waktuTampil, // Waktu sudah rapi
+                `<span class="badge bg-info text-dark" style="font-size:0.9em">${mapelDisplay}</span>`,
+                `<div class="${valColor} fw-bold fs-5">${nilaiDisplay}</div>`,
                 badge
             ]);
         });
@@ -296,17 +319,14 @@
 
         // LOGIKA TAMPILAN SESUAI ROLE
         if (role === "PROKTOR_SD") {
-            // Proktor: Sembunyikan Filter, Tampilkan Judul Sekolah
             $('#wrapper-filter').hide();
             $('#judul-sekolah-proktor').html(`<i class="fas fa-school me-2"></i>${namaSekolahProktor}`).show();
             $('#judul-print').text(namaSekolahProktor + " - Tahun 2026");
         } else {
-            // Admin: Tampilkan Filter
             $('#wrapper-filter').show();
             $('#judul-sekolah-proktor').hide();
             $('#judul-print').text("Kecamatan Selogiri - Tahun 2026");
             
-            // Isi Dropdown Filter
             let filterHtml = '<option value="">-- Semua Sekolah --</option>';
             Array.from(sekolahSet).sort().forEach(s => {
                 filterHtml += `<option value="${s}">${s}</option>`;
