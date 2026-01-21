@@ -10,124 +10,212 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
     <style>
-        body { background-color: #f4f6f9; font-size: 14px; }
-        .sidebar { min-height: 100vh; background: #343a40; color: white; }
-        .nav-link { color: #ccc; }
-        .nav-link:hover, .nav-link.active { color: white; background: #495057; }
-        .card-stat { border: none; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        .status-selesai { background-color: #d4edda; color: #155724; padding: 2px 8px; border-radius: 4px; font-weight: bold;}
-        .status-belum { background-color: #f8d7da; color: #721c24; padding: 2px 8px; border-radius: 4px; }
+        body { background-color: #f4f6f9; font-size: 14px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         
-        /* Modifikasi Cetak */
+        /* Sidebar Styling */
+        .sidebar { min-height: 100vh; background: #212529; color: white; position: fixed; top: 0; left: 0; bottom: 0; z-index: 100; box-shadow: 2px 0 5px rgba(0,0,0,0.1); }
+        .sidebar .nav-link { color: #aaa; padding: 10px 15px; border-radius: 5px; margin-bottom: 5px; transition: 0.2s; }
+        .sidebar .nav-link:hover, .sidebar .nav-link.active { color: white; background: #343a40; }
+        .sidebar-header { padding: 20px 15px; border-bottom: 1px solid #444; margin-bottom: 20px; }
+        
+        /* Content Wrapper */
+        .content-wrapper { margin-left: 16.66667%; /* Sesuai col-md-2 */ padding: 20px; transition: 0.3s; }
+        
+        /* Cards & Status */
+        .card-stat { border: none; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); transition: transform 0.2s; }
+        .card-stat:hover { transform: translateY(-5px); }
+        .status-selesai { background-color: #d1e7dd; color: #0f5132; padding: 4px 10px; border-radius: 20px; font-weight: 600; font-size: 12px; }
+        .status-belum { background-color: #f8d7da; color: #842029; padding: 4px 10px; border-radius: 20px; font-weight: 600; font-size: 12px; }
+        
+        /* Table Styling */
+        table.dataTable tbody td { vertical-align: middle; }
+        
+        /* CETAK / PRINT MODE */
         @media print {
-            .no-print, .sidebar, .dataTables_filter, .dataTables_length, .pagination { display: none !important; }
-            .content-wrapper { margin: 0; padding: 0; }
-            .card { border: none; shadow: none; }
-            table { width: 100%; border-collapse: collapse; }
-            th, td { border: 1px solid black !important; font-size: 12px; }
-            /* Paksa ganti page setiap ganti sekolah (jika pakai grouping, opsional) */
-            .page-break { page-break-after: always; }
+            .no-print, .sidebar, .dataTables_filter, .dataTables_length, .dataTables_info, .dataTables_paginate { display: none !important; }
+            .content-wrapper { margin-left: 0 !important; width: 100% !important; padding: 0 !important; }
+            .card { border: none !important; box-shadow: none !important; }
+            .card-header { display: none; }
+            table { width: 100% !important; border-collapse: collapse !important; }
+            th, td { border: 1px solid #000 !important; font-size: 12pt !important; padding: 5px !important; color: black !important; }
+            
+            /* Header Laporan untuk Print */
+            #header-print { display: block !important; text-align: center; margin-bottom: 20px; border-bottom: 2px solid black; padding-bottom: 10px; }
+            
+            /* Paksa background color tercetak (untuk status) */
+            .status-selesai, .status-belum { -webkit-print-color-adjust: exact; print-color-adjust: exact; border: 1px solid #000; }
         }
+        
+        #header-print { display: none; }
     </style>
 </head>
 <body>
 
 <div class="container-fluid">
     <div class="row">
-        <div class="col-md-2 sidebar p-3 no-print">
-            <h5 class="mb-4"><i class="fas fa-user-shield"></i> PROKTOR TKA</h5>
-            <div class="mb-3">
-                <label class="small text-muted">Password Admin</label>
-                <input type="password" id="admin-pass" class="form-control form-control-sm" placeholder="Masukkan Pass..." value="rahasia123">
+        <div class="col-md-2 sidebar d-flex flex-column p-0 no-print">
+            <div class="sidebar-header">
+                <h5 class="m-0"><i class="fas fa-user-shield me-2"></i>ADMIN TKA</h5>
+                <small class="text-muted">Panel Monitoring</small>
             </div>
-            <hr>
-            <ul class="nav flex-column">
-                <li class="nav-item mb-2">
-                    <a href="#" class="nav-link active" onclick="loadData()"><i class="fas fa-sync-alt"></i> Refresh Data</a>
-                </li>
-                <li class="nav-item mb-2">
-                    <a href="#" class="nav-link" data-bs-toggle="modal" data-bs-target="#modalSekoci"><i class="fas fa-life-ring"></i> Input Sekoci (Manual)</a>
-                </li>
-                <li class="nav-item mt-4">
-                    <button class="btn btn-success w-100 btn-sm" onclick="window.print()"><i class="fas fa-print"></i> Cetak Laporan</button>
-                </li>
-            </ul>
+            
+            <div class="p-3">
+                <div class="mb-3">
+                    <label class="small text-muted mb-1">Password Admin</label>
+                    <input type="password" id="admin-pass" class="form-control form-control-sm bg-dark text-white border-secondary" placeholder="Masukkan Password..." value="rahasia123">
+                </div>
+                
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a href="#" class="nav-link active" onclick="loadData()"><i class="fas fa-sync-alt me-2"></i> Refresh Data</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" data-bs-toggle="modal" data-bs-target="#modalSekoci"><i class="fas fa-life-ring me-2"></i> Input Sekoci</a>
+                    </li>
+                </ul>
+
+                <hr class="border-secondary">
+                
+                <div class="d-grid gap-2">
+                    <button class="btn btn-success btn-sm" onclick="window.print()"><i class="fas fa-print me-1"></i> Cetak Laporan</button>
+                </div>
+            </div>
+            
+            <div class="mt-auto p-3 text-center text-muted small">
+                &copy; 2026 Tim Teknis
+            </div>
         </div>
 
-        <div class="col-md-10 p-4 content-wrapper">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h3>Monitoring Peserta</h3>
-                <div class="no-print">
-                    <select id="filter-sekolah" class="form-select" onchange="filterTable()">
+        <div class="col-md-10 content-wrapper">
+            
+            <div id="header-print">
+                <h3>LAPORAN HASIL UJIAN SIMULASI TKA</h3>
+                <p>Kecamatan Selogiri - Tahun 2026</p>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center mb-4 no-print">
+                <div>
+                    <h3 class="fw-bold text-dark">Monitoring Peserta</h3>
+                    <span class="text-muted">Data real-time dari server</span>
+                </div>
+                <div>
+                    <select id="filter-sekolah" class="form-select shadow-sm" style="min-width: 250px;" onchange="filterTable()">
                         <option value="">-- Semua Sekolah --</option>
                         </select>
                 </div>
             </div>
 
             <div class="row mb-4 no-print">
-                <div class="col-md-3">
+                <div class="col-md-4">
                     <div class="card card-stat bg-primary text-white p-3">
-                        <h3><span id="stat-total">0</span></h3>
-                        <small>Total Peserta</small>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h2 class="m-0 fw-bold" id="stat-total">0</h2>
+                                <small>Total Peserta Terdaftar</small>
+                            </div>
+                            <i class="fas fa-users fa-3x opacity-50"></i>
+                        </div>
                     </div>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-4">
                     <div class="card card-stat bg-success text-white p-3">
-                        <h3><span id="stat-selesai">0</span></h3>
-                        <small>Selesai Mengerjakan</small>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h2 class="m-0 fw-bold" id="stat-selesai">0</h2>
+                                <small>Sudah Submit</small>
+                            </div>
+                            <i class="fas fa-check-circle fa-3x opacity-50"></i>
+                        </div>
                     </div>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-4">
                     <div class="card card-stat bg-warning text-dark p-3">
-                        <h3><span id="stat-belum">0</span></h3>
-                        <small>Belum/Sedang Ujian</small>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h2 class="m-0 fw-bold" id="stat-belum">0</h2>
+                                <small>Belum / Sedang Mengerjakan</small>
+                            </div>
+                            <i class="fas fa-clock fa-3x opacity-50"></i>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <div class="card p-3">
-                <div class="table-responsive">
-                    <table id="tabel-monitor" class="table table-hover w-100">
-                        <thead>
-                            <tr class="table-dark">
-                                <th>No</th>
-                                <th>NISN</th>
-                                <th>Nama Peserta</th>
-                                <th>Sekolah</th>
-                                <th>Waktu Submit</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tbody-monitor">
-                            <tr><td colspan="6" class="text-center">Klik 'Refresh Data' untuk memuat...</td></tr>
-                        </tbody>
-                    </table>
+            <div class="card shadow-sm">
+                <div class="card-body p-0">
+                    <div class="table-responsive p-3">
+                        <table id="tabel-monitor" class="table table-striped table-hover w-100 align-middle">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th class="text-center" width="5%">No</th>
+                                    <th width="15%">NISN</th>
+                                    <th>Nama Peserta</th>
+                                    <th>Sekolah</th>
+                                    <th>Waktu Submit</th>
+                                    <th class="text-center">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbody-monitor">
+                                </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
+            
+            <div class="mt-5 text-right" style="display:none;" id="footer-print-only">
+                <table width="100%" border="0">
+                    <tr>
+                        <td width="70%"></td>
+                        <td align="center">
+                            <p>Mengetahui,<br>Koordinator Teknis</p>
+                            <br><br><br>
+                            <p><b>_______________________</b></p>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
         </div>
     </div>
 </div>
 
-<div class="modal fade" id="modalSekoci" tabindex="-1">
-    <div class="modal-dialog">
+<div class="modal fade" id="modalSekoci" tabindex="-1" data-bs-backdrop="static">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header bg-danger text-white">
-                <h5 class="modal-title">Input Jawaban Darurat (Sekoci)</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <h5 class="modal-title"><i class="fas fa-life-ring me-2"></i>Sekoci Penyelamat (Input Manual)</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
-                <p class="small">Gunakan fitur ini jika siswa gagal submit karena koneksi. Minta siswa kirim/foto <b>KODE PENYELAMAT</b> yang muncul di layar error mereka.</p>
-                <div class="mb-3">
-                    <label>Paste Kode Base64 di sini:</label>
-                    <textarea class="form-control" id="input-base64" rows="5" placeholder="eyIxIjoiQSIs..."></textarea>
+                <div class="alert alert-warning d-flex align-items-center">
+                    <i class="fas fa-exclamation-triangle fa-2x me-3"></i>
+                    <div>
+                        <strong>Perhatian!</strong> Fitur ini digunakan jika siswa gagal mengirim jawaban karena internet putus. 
+                        Minta siswa mengirimkan <b>KODE PENYELAMAT</b> yang muncul di layar merah mereka.
+                    </div>
                 </div>
-                <div id="preview-sekoci" class="alert alert-info d-none">
-                    <b>Preview:</b> <span id="nama-sekoci"></span>
+                
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Tempel Kode Base64 di sini:</label>
+                    <textarea class="form-control font-monospace" id="input-base64" rows="5" placeholder="Contoh: eyIxIjoiQSIsIjIiOiJCIiwibmFtYSI6IkJ1ZGkifQ=="></textarea>
+                </div>
+                
+                <div id="preview-sekoci" class="card bg-light d-none border-info">
+                    <div class="card-body">
+                        <h6 class="text-info fw-bold">Preview Data Siswa:</h6>
+                        <table class="table table-sm table-borderless m-0">
+                            <tr><td width="100">NISN</td><td>: <span id="sekoci-nisn"></span></td></tr>
+                            <tr><td>Nama</td><td>: <span id="sekoci-nama"></span></td></tr>
+                            <tr><td>Sekolah</td><td>: <span id="sekoci-sekolah"></span></td></tr>
+                            <tr><td>Jml Jawab</td><td>: <span id="sekoci-jml"></span> Soal</td></tr>
+                        </table>
+                    </div>
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" onclick="decodePreview()">Cek Kode</button>
-                <button type="button" class="btn btn-primary" onclick="kirimManual()" id="btn-kirim-sekoci" disabled>Kirim ke Server</button>
+                <button type="button" class="btn btn-secondary" onclick="resetSekoci()">Reset</button>
+                <button type="button" class="btn btn-info text-white" onclick="decodePreview()"><i class="fas fa-search me-1"></i> Cek Kode</button>
+                <button type="button" class="btn btn-success" onclick="kirimManual()" id="btn-kirim-sekoci" disabled><i class="fas fa-paper-plane me-1"></i> Kirim ke Server</button>
             </div>
         </div>
     </div>
@@ -139,23 +227,42 @@
 <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
 
 <script>
-    // URL API YANG SAMA DENGAN UJIAN
+    // =========================================================
+    // KONFIGURASI PENTING
+    // =========================================================
+    // Paste URL Web App GAS Anda di bawah ini:
     const API_URL = "https://script.google.com/macros/s/AKfycbyWJx6CT3JTr-Of1hwuTDavdXyAjFZQxTxQwnPS466iR8-lWQantSuOtAlUFxXx0DFo/exec"; 
+    // =========================================================
 
-    let table; // Variabel DataTable
-    let rawData = []; // Data mentah
+    let table; // Instance DataTable
+    let payloadSekoci = null;
 
     $(document).ready(function() {
-        // Inisialisasi DataTable Kosong
+        // Inisialisasi DataTable (Tanpa Data Awal)
         table = $('#tabel-monitor').DataTable({
-            language: { url: '//cdn.datatables.net/plug-ins/1.13.4/i18n/id.json' }
+            language: { 
+                url: '//cdn.datatables.net/plug-ins/1.13.4/i18n/id.json',
+                emptyTable: "Data belum dimuat. Masukkan password dan klik 'Refresh Data'." 
+            },
+            columnDefs: [
+                { className: "text-center", targets: [0, 5] }, // Center alignment untuk No & Status
+                { className: "text-nowrap", targets: [1, 4] }  // Jangan bungkus teks NISN & Waktu
+            ],
+            pageLength: 25 // Default tampilkan 25 data
         });
     });
 
+    // --- FUNGSI LOAD DATA UTAMA ---
     function loadData() {
         let pass = $('#admin-pass').val();
         
-        $('#tbody-monitor').html('<tr><td colspan="6" class="text-center"><i class="fas fa-spinner fa-spin"></i> Mengambil data dari server...</td></tr>');
+        // UI Feedback Loading
+        let btn = $('.nav-link.active');
+        let originalText = btn.html();
+        btn.html('<i class="fas fa-spinner fa-spin me-2"></i> Memuat...').addClass('disabled');
+        
+        // Bersihkan Tabel
+        table.clear().draw();
 
         $.ajax({
             url: API_URL,
@@ -163,110 +270,154 @@
             data: { action: "admin_monitor", password: pass },
             dataType: "json",
             success: function(resp) {
+                // Kembalikan tombol normal
+                btn.html(originalText).removeClass('disabled');
+
                 if(resp.status === "SUKSES") {
                     renderTable(resp.data);
                 } else {
-                    alert(resp.pesan);
-                    $('#tbody-monitor').html('');
+                    alert("⚠️ GAGAL: " + resp.pesan);
                 }
             },
-            error: function() {
-                alert("Gagal koneksi ke server.");
+            error: function(err) {
+                btn.html(originalText).removeClass('disabled');
+                console.error(err);
+                alert("❌ Terjadi kesalahan koneksi ke server GAS.");
             }
         });
     }
 
+    // --- RENDER DATA KE TABEL & STATISTIK ---
     function renderTable(data) {
-        rawData = data;
         let rows = [];
         let total = data.length;
         let selesai = 0;
-        let sekolahSet = new Set();
+        let sekolahSet = new Set(); // Set unik untuk filter sekolah
 
         data.forEach((item, index) => {
             sekolahSet.add(item.sekolah);
             if(item.status === "Selesai") selesai++;
 
             let badge = item.status === "Selesai" 
-                ? `<span class="status-selesai">Selesai</span>` 
-                : `<span class="status-belum">Belum</span>`;
+                ? `<span class="status-selesai"><i class="fas fa-check me-1"></i>Selesai</span>` 
+                : `<span class="status-belum"><i class="fas fa-times me-1"></i>Belum</span>`;
 
             rows.push([
                 index + 1,
                 item.nisn,
-                item.nama,
+                `<b>${item.nama}</b>`,
                 item.sekolah,
                 item.waktu,
                 badge
             ]);
         });
 
-        // Update Statistik
-        $('#stat-total').text(total);
-        $('#stat-selesai').text(selesai);
-        $('#stat-belum').text(total - selesai);
+        // 1. Masukkan data ke DataTables
+        table.rows.add(rows).draw();
 
-        // Update Dropdown Sekolah
+        // 2. Update Kartu Statistik
+        animateValue("stat-total", parseInt($('#stat-total').text()), total, 1000);
+        animateValue("stat-selesai", parseInt($('#stat-selesai').text()), selesai, 1000);
+        animateValue("stat-belum", parseInt($('#stat-belum').text()), total - selesai, 1000);
+
+        // 3. Update Dropdown Filter Sekolah (Hanya jika belum ada isinya)
+        let currentFilter = $('#filter-sekolah').val();
         let filterHtml = '<option value="">-- Semua Sekolah --</option>';
-        sekolahSet.forEach(s => {
-            filterHtml += `<option value="${s}">${s}</option>`;
+        
+        // Urutkan sekolah secara alfabetis
+        let sortedSekolah = Array.from(sekolahSet).sort();
+        
+        sortedSekolah.forEach(s => {
+            let selected = (s === currentFilter) ? 'selected' : '';
+            filterHtml += `<option value="${s}" ${selected}>${s}</option>`;
         });
         $('#filter-sekolah').html(filterHtml);
-
-        // Update DataTable
-        table.clear().rows.add(rows).draw();
     }
 
-    // Filter Sekolah (Custom Search DataTables)
+    // --- FILTER DATA SEKOLAH ---
     function filterTable() {
         let val = $('#filter-sekolah').val();
-        table.column(3).search(val).draw(); // Kolom index 3 adalah 'Sekolah'
+        // Kolom index 3 adalah 'Sekolah'
+        table.column(3).search(val).draw(); 
     }
 
-    // --- LOGIKA SEKOCI (INPUT MANUAL) ---
-    let payloadSekoci = null;
-
+    // --- FITUR SEKOCI (INPUT MANUAL) ---
     function decodePreview() {
         let base64 = $('#input-base64').val().trim();
+        if(!base64) { alert("Kode kosong!"); return; }
+
         try {
             let jsonString = atob(base64); // Decode Base64
-            payloadSekoci = JSON.parse(jsonString); // Parse JSON
+            payloadSekoci = JSON.parse(jsonString); // Parse JSON ke Object
             
-            $('#nama-sekoci').text(`${payloadSekoci.nama} (${payloadSekoci.sekolah})`);
+            // Tampilkan Preview
+            $('#sekoci-nisn').text(payloadSekoci.nisn);
+            $('#sekoci-nama').text(payloadSekoci.nama);
+            $('#sekoci-sekolah').text(payloadSekoci.sekolah);
+            $('#sekoci-jml').text(Object.keys(payloadSekoci.jawaban || {}).length);
+            
             $('#preview-sekoci').removeClass('d-none');
             $('#btn-kirim-sekoci').prop('disabled', false);
         } catch (e) {
-            alert("Kode tidak valid! Pastikan copas semua karakter.");
-            $('#preview-sekoci').addClass('d-none');
+            alert("❌ Kode tidak valid! Pastikan siswa menyalin/memfoto semua karakter kode.");
+            resetSekoci();
         }
     }
 
     function kirimManual() {
         if(!payloadSekoci) return;
 
-        $('#btn-kirim-sekoci').text('Mengirim...').prop('disabled', true);
+        let btn = $('#btn-kirim-sekoci');
+        btn.html('<i class="fas fa-spinner fa-spin"></i> Mengirim...').prop('disabled', true);
 
-        // Kirim ke endpoint 'admin_input_manual' atau 'submit' biasa
-        // Kita pakai 'submit' biasa saja karena payloadnya sama
-        // Tapi kita bungkus lagi agar masuk parameter
-        
         $.ajax({
             url: API_URL,
             type: "POST",
-            data: { action: "admin_input_manual", data_jawaban: JSON.stringify(payloadSekoci) },
+            data: { 
+                action: "admin_input_manual", 
+                data_jawaban: JSON.stringify(payloadSekoci) 
+            },
             dataType: "json",
             success: function(resp) {
                 if(resp.status === "OK") {
-                    alert("Berhasil diselamatkan!");
+                    alert("✅ SUKSES! Data siswa berhasil diselamatkan.");
                     $('#modalSekoci').modal('hide');
+                    resetSekoci();
                     $('#input-base64').val('');
-                    loadData(); // Refresh tabel
+                    loadData(); // Refresh tabel otomatis
                 } else {
-                    alert("Gagal: " + resp.pesan);
+                    alert("❌ GAGAL SERVER: " + resp.pesan);
                 }
-                $('#btn-kirim-sekoci').text('Kirim ke Server').prop('disabled', false);
+                btn.html('<i class="fas fa-paper-plane me-1"></i> Kirim ke Server').prop('disabled', false);
+            },
+            error: function() {
+                alert("❌ Gagal menghubungi server.");
+                btn.html('<i class="fas fa-paper-plane me-1"></i> Kirim ke Server').prop('disabled', false);
             }
         });
+    }
+
+    function resetSekoci() {
+        $('#preview-sekoci').addClass('d-none');
+        $('#btn-kirim-sekoci').prop('disabled', true);
+        payloadSekoci = null;
+    }
+
+    // Helper: Animasi Angka Statistik
+    function animateValue(id, start, end, duration) {
+        if (start === end) return;
+        let range = end - start;
+        let current = start;
+        let increment = end > start ? 1 : -1;
+        let stepTime = Math.abs(Math.floor(duration / range));
+        let obj = document.getElementById(id);
+        let timer = setInterval(function() {
+            current += increment;
+            obj.innerHTML = current;
+            if (current == end) {
+                clearInterval(timer);
+            }
+        }, stepTime);
     }
 </script>
 
