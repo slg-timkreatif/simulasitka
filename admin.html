@@ -2,34 +2,22 @@
 <html lang="id">
 <head>
     <title>Dashboard Monitoring TKA</title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    
+    <meta charset="utf-8"> <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-
     <style>
         body { background-color: #f4f6f9; font-family: 'Segoe UI', sans-serif; }
-        
-        /* Sidebar */
         .sidebar { min-height: 100vh; background: #212529; color: white; position: fixed; top: 0; left: 0; bottom: 0; z-index: 100; box-shadow: 2px 0 5px rgba(0,0,0,0.1); width: 250px; transition: all 0.3s; }
         .sidebar-header { padding: 20px; border-bottom: 1px solid #444; background: #1a1e21; }
         .content-wrapper { margin-left: 250px; padding: 20px; transition: all 0.3s; }
-        
-        /* Nav Links */
         .sidebar .nav-link { color: #bbb; padding: 10px 15px; margin-bottom: 5px; border-radius: 5px; }
         .sidebar .nav-link:hover, .sidebar .nav-link.active { color: white; background: #326698; }
-        
-        /* Card Stats */
         .card-stat { border: none; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); transition: transform 0.2s; }
         .card-stat:hover { transform: translateY(-5px); }
-        
-        /* Status Badges */
         .status-selesai { background-color: #d1e7dd; color: #0f5132; padding: 4px 10px; border-radius: 20px; font-weight: 600; font-size: 0.85em; }
         .status-belum { background-color: #f8d7da; color: #842029; padding: 4px 10px; border-radius: 20px; font-weight: 600; font-size: 0.85em; }
         
-        /* Print Styles */
         @media print {
             .no-print, .sidebar, .dataTables_filter, .dataTables_length, .dataTables_info, .dataTables_paginate { display: none !important; }
             .content-wrapper { margin-left: 0 !important; width: 100% !important; padding: 0 !important; }
@@ -39,98 +27,42 @@
             #header-print { display: block !important; text-align: center; margin-bottom: 20px; border-bottom: 2px solid black; padding-bottom: 10px; }
             .status-selesai, .status-belum { border: 1px solid #000; -webkit-print-color-adjust: exact; }
             .text-success, .text-danger, .text-primary { color: black !important; font-weight: normal !important; }
-            .badge { border: 1px solid #000; color: black !important; font-weight: normal; }
         }
         #header-print { display: none; }
-        
-        /* Responsive Mobile */
-        @media (max-width: 768px) {
-            .sidebar { margin-left: -250px; }
-            .sidebar.active { margin-left: 0; }
-            .content-wrapper { margin-left: 0; }
-        }
+        @media (max-width: 768px) { .sidebar { margin-left: -250px; } .sidebar.active { margin-left: 0; } .content-wrapper { margin-left: 0; } }
     </style>
 </head>
 <body>
 
 <div class="sidebar d-flex flex-column no-print" id="sidebar">
-    <div class="sidebar-header">
-        <h5 class="m-0 fw-bold"><i class="fas fa-server me-2"></i>MONITORING</h5>
-        <small class="text-muted">TKA Kecamatan</small>
-    </div>
-    
+    <div class="sidebar-header"><h5 class="m-0 fw-bold"><i class="fas fa-server me-2"></i>MONITORING</h5><small class="text-muted">TKA Kecamatan</small></div>
     <div class="p-3">
-        <div class="mb-3">
-            <label class="small text-muted mb-1">Login Akses</label>
-            <input type="password" id="admin-pass" class="form-control form-control-sm bg-dark text-white border-secondary" placeholder="Pass Admin / NPSN...">
-        </div>
-        
+        <div class="mb-3"><label class="small text-muted mb-1">Login Akses</label><input type="password" id="admin-pass" class="form-control form-control-sm bg-dark text-white border-secondary" placeholder="Pass Admin / NPSN..."></div>
         <ul class="nav flex-column">
-            <li class="nav-item">
-                <a href="#" class="nav-link active" onclick="loadData()"><i class="fas fa-sync-alt me-2"></i> Refresh Data</a>
-            </li>
-            <li class="nav-item">
-                <a href="#" class="nav-link" data-bs-toggle="modal" data-bs-target="#modalSekoci"><i class="fas fa-life-ring me-2"></i> Input Sekoci</a>
-            </li>
+            <li class="nav-item"><a href="#" class="nav-link active" onclick="loadData()"><i class="fas fa-sync-alt me-2"></i> Refresh Data</a></li>
+            <li class="nav-item"><a href="#" class="nav-link" data-bs-toggle="modal" data-bs-target="#modalSekoci"><i class="fas fa-life-ring me-2"></i> Input Sekoci</a></li>
         </ul>
-
         <hr class="border-secondary">
-        
-        <div class="d-grid gap-2">
-            <button class="btn btn-success btn-sm" onclick="window.print()"><i class="fas fa-print me-1"></i> Cetak Laporan</button>
-        </div>
+        <div class="d-grid gap-2"><button class="btn btn-success btn-sm" onclick="window.print()"><i class="fas fa-print me-1"></i> Cetak Laporan</button></div>
     </div>
-    
-    <div class="mt-auto p-3 text-center text-muted small">
-        &copy; 2026 Tim Teknis
-    </div>
+    <div class="mt-auto p-3 text-center text-muted small">&copy; 2026 Tim Teknis</div>
 </div>
 
 <div class="content-wrapper">
-    <div id="header-print">
-        <h3 class="fw-bold">LAPORAN HASIL UJIAN TKA</h3>
-        <p id="judul-print">Kecamatan Selogiri - Tahun 2026</p>
-    </div>
+    <div id="header-print"><h3 class="fw-bold">LAPORAN HASIL UJIAN TKA</h3><p id="judul-print">Kecamatan Selogiri - Tahun 2026</p></div>
 
     <div class="d-flex justify-content-between align-items-center mb-4 no-print">
-        <div>
-            <h3 class="fw-bold text-dark m-0">Dashboard Data</h3>
-            <div id="info-login" class="text-muted small">Silakan login untuk memuat data.</div>
-        </div>
-        
+        <div><h3 class="fw-bold text-dark m-0">Dashboard Data</h3><div id="info-login" class="text-muted small">Silakan login untuk memuat data.</div></div>
         <div id="wrapper-filter">
-            <select id="filter-sekolah" class="form-select shadow-sm" style="min-width: 250px;" onchange="filterTable()">
-                <option value="">-- Semua Sekolah --</option>
-            </select>
+            <select id="filter-sekolah" class="form-select shadow-sm" style="min-width: 250px;" onchange="filterTable()"><option value="">-- Semua Sekolah --</option></select>
         </div>
         <h4 id="judul-sekolah-proktor" class="text-primary fw-bold m-0" style="display:none;"></h4>
     </div>
 
     <div class="row mb-4 no-print">
-        <div class="col-md-4 mb-2">
-            <div class="card card-stat bg-primary text-white p-3">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div><h2 class="m-0 fw-bold" id="stat-total">0</h2><small>Total Peserta</small></div>
-                    <i class="fas fa-users fa-3x opacity-50"></i>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4 mb-2">
-            <div class="card card-stat bg-success text-white p-3">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div><h2 class="m-0 fw-bold" id="stat-selesai">0</h2><small>Sudah Submit</small></div>
-                    <i class="fas fa-check-circle fa-3x opacity-50"></i>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4 mb-2">
-            <div class="card card-stat bg-warning text-dark p-3">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div><h2 class="m-0 fw-bold" id="stat-belum">0</h2><small>Belum / Sedang</small></div>
-                    <i class="fas fa-clock fa-3x opacity-50"></i>
-                </div>
-            </div>
-        </div>
+        <div class="col-md-4 mb-2"><div class="card card-stat bg-primary text-white p-3"><div class="d-flex justify-content-between align-items-center"><div><h2 class="m-0 fw-bold" id="stat-total">0</h2><small>Total Peserta</small></div><i class="fas fa-users fa-3x opacity-50"></i></div></div></div>
+        <div class="col-md-4 mb-2"><div class="card card-stat bg-success text-white p-3"><div class="d-flex justify-content-between align-items-center"><div><h2 class="m-0 fw-bold" id="stat-selesai">0</h2><small>Sudah Submit</small></div><i class="fas fa-check-circle fa-3x opacity-50"></i></div></div></div>
+        <div class="col-md-4 mb-2"><div class="card card-stat bg-warning text-dark p-3"><div class="d-flex justify-content-between align-items-center"><div><h2 class="m-0 fw-bold" id="stat-belum">0</h2><small>Belum / Sedang</small></div><i class="fas fa-clock fa-3x opacity-50"></i></div></div></div>
     </div>
 
     <div class="card shadow-sm">
@@ -138,65 +70,27 @@
             <div class="table-responsive p-3">
                 <table id="tabel-monitor" class="table table-striped table-hover w-100 align-middle">
                     <thead class="table-dark">
-                        <tr>
-                            <th class="text-center" width="5%">No</th>
-                            <th width="15%">NISN</th>
-                            <th>Nama Peserta</th>
-                            <th>Sekolah</th>
-                            <th>Waktu Submit</th>
-                            <th class="text-center">Mapel</th>
-                            <th class="text-center">NILAI</th>
-                            <th class="text-center">Status</th>
-                        </tr>
+                        <tr><th class="text-center" width="5%">No</th><th width="15%">NISN</th><th>Nama Peserta</th><th>Sekolah</th><th>Waktu Submit</th><th class="text-center">Mapel</th><th class="text-center">NILAI</th><th class="text-center">Status</th></tr>
                     </thead>
-                    <tbody id="tbody-monitor">
-                        </tbody>
+                    <tbody id="tbody-monitor"></tbody>
                 </table>
             </div>
         </div>
     </div>
     
-    <div class="mt-5 text-end" style="display:none;" id="footer-print-only">
-        <table width="100%" border="0">
-            <tr>
-                <td width="70%"></td>
-                <td align="center">
-                    <p>Mengetahui,<br>Koordinator / Proktor</p>
-                    <br><br><br>
-                    <p><b>_______________________</b></p>
-                </td>
-            </tr>
-        </table>
-    </div>
+    <div class="mt-5 text-end" style="display:none;" id="footer-print-only"><table width="100%" border="0"><tr><td width="70%"></td><td align="center"><p>Mengetahui,<br>Koordinator / Proktor</p><br><br><br><p><b>_______________________</b></p></td></tr></table></div>
 </div>
 
 <div class="modal fade" id="modalSekoci" tabindex="-1" data-bs-backdrop="static">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <div class="modal-header bg-danger text-white">
-                <h5 class="modal-title"><i class="fas fa-life-ring me-2"></i>Sekoci Penyelamat</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-            </div>
+            <div class="modal-header bg-danger text-white"><h5 class="modal-title"><i class="fas fa-life-ring me-2"></i>Sekoci Penyelamat</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
             <div class="modal-body">
-                <div class="alert alert-warning small">
-                    Fitur ini untuk input manual jika siswa gagal kirim data. Paste kode acak dari siswa di sini.
-                </div>
+                <div class="alert alert-warning small">Fitur ini untuk input manual jika siswa gagal kirim data. Paste kode acak dari siswa di sini.</div>
                 <textarea class="form-control font-monospace mb-3" id="input-base64" rows="5" placeholder="Paste kode di sini..."></textarea>
-                
-                <div id="preview-sekoci" class="card bg-light d-none border-info">
-                    <div class="card-body py-2">
-                        <table class="table table-sm table-borderless m-0 small">
-                            <tr><td width="100">Nama</td><td>: <span id="sekoci-nama" class="fw-bold"></span></td></tr>
-                            <tr><td>Sekolah</td><td>: <span id="sekoci-sekolah"></span></td></tr>
-                        </table>
-                    </div>
-                </div>
+                <div id="preview-sekoci" class="card bg-light d-none border-info"><div class="card-body py-2"><table class="table table-sm table-borderless m-0 small"><tr><td width="100">Nama</td><td>: <span id="sekoci-nama" class="fw-bold"></span></td></tr><tr><td>Sekolah</td><td>: <span id="sekoci-sekolah"></span></td></tr></table></div></div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" onclick="resetSekoci()">Reset</button>
-                <button type="button" class="btn btn-info text-white" onclick="decodePreview()">Cek</button>
-                <button type="button" class="btn btn-success" onclick="kirimManual()" id="btn-kirim-sekoci" disabled>Kirim</button>
-            </div>
+            <div class="modal-footer"><button type="button" class="btn btn-secondary" onclick="resetSekoci()">Reset</button><button type="button" class="btn btn-info text-white" onclick="decodePreview()">Cek</button><button type="button" class="btn btn-success" onclick="kirimManual()" id="btn-kirim-sekoci" disabled>Kirim</button></div>
         </div>
     </div>
 </div>
@@ -208,13 +102,10 @@
 
 <script>
     // ==========================================
-    // PASTE URL WEB APP GAS ANDA DI SINI (WAJIB)
-    // ==========================================
     const API_URL = "https://script.google.com/macros/s/AKfycbyWJx6CT3JTr-Of1hwuTDavdXyAjFZQxTxQwnPS466iR8-lWQantSuOtAlUFxXx0DFo/exec"; 
     // ==========================================
 
-    let table;
-    let payloadSekoci = null;
+    let table, payloadSekoci = null;
 
     $(document).ready(function() {
         table = $('#tabel-monitor').DataTable({
@@ -226,161 +117,76 @@
 
     function loadData() {
         let pass = $('#admin-pass').val();
-        let btn = $('.nav-link.active');
-        let originalText = btn.html();
-        
-        btn.html('<i class="fas fa-spinner fa-spin me-2"></i> Loading...').addClass('disabled');
-        table.clear().draw();
+        let btn = $('.nav-link.active'); let originalText = btn.html();
+        btn.html('<i class="fas fa-spinner fa-spin me-2"></i> Loading...').addClass('disabled'); table.clear().draw();
 
         $.ajax({
-            url: API_URL,
-            type: "POST",
-            data: { action: "admin_monitor", password: pass },
-            dataType: "json",
+            url: API_URL, type: "POST", data: { action: "admin_monitor", password: pass }, dataType: "json",
             success: function(resp) {
                 btn.html(originalText).removeClass('disabled');
                 if(resp.status === "SUKSES") {
                     renderTable(resp.data, resp.role, resp.sekolah);
-                    
                     let roleLabel = (resp.role === "ADMIN_KECAMATAN") ? "Admin Kecamatan" : "Proktor SD";
                     $('#info-login').html(`<span class="badge bg-success">${roleLabel}</span> Data berhasil dimuat.`);
-                } else {
-                    alert("⚠️ " + resp.pesan);
-                }
+                } else { alert("⚠️ " + resp.pesan); }
             },
-            error: function() {
-                btn.html(originalText).removeClass('disabled');
-                alert("❌ Gagal koneksi ke server.");
-            }
+            error: function() { btn.html(originalText).removeClass('disabled'); alert("❌ Gagal koneksi ke server."); }
         });
     }
 
     function renderTable(data, role, namaSekolahProktor) {
-        let rows = [];
-        let total = data.length;
-        let selesai = 0;
-        let sekolahSet = new Set();
-
+        let rows = [], total = data.length, selesai = 0, sekolahSet = new Set();
         data.forEach((item, index) => {
-            sekolahSet.add(item.sekolah);
-            if(item.status === "Selesai") selesai++;
-
-            let badge = item.status === "Selesai" 
-                ? `<span class="status-selesai"><i class="fas fa-check me-1"></i>Selesai</span>` 
-                : `<span class="status-belum"><i class="fas fa-times me-1"></i>Belum</span>`;
-
-            // Pewarnaan Nilai
-            let valColor = "text-dark";
-            let nilaiDisplay = item.nilai;
+            sekolahSet.add(item.sekolah); if(item.status === "Selesai") selesai++;
+            let badge = item.status === "Selesai" ? `<span class="status-selesai"><i class="fas fa-check me-1"></i>Selesai</span>` : `<span class="status-belum"><i class="fas fa-times me-1"></i>Belum</span>`;
+            let valColor = item.nilai >= 70 ? "text-success" : "text-danger"; if(!item.nilai) item.nilai = "-";
             
-            if(item.nilai >= 70) valColor = "text-success";
-            if(item.nilai < 70) valColor = "text-danger";
-            if(!item.nilai) nilaiDisplay = "-";
-
-            // --- PERBAIKAN FORMAT WAKTU (MESIN CUCI) ---
+            // --- MESIN CUCI WAKTU ---
             let waktuTampil = item.waktu;
-            // Deteksi jika format panjang / ISO / GMT
             if (waktuTampil && (waktuTampil.includes("GMT") || waktuTampil.length > 20)) {
                 let d = new Date(waktuTampil);
                 if (!isNaN(d.getTime())) {
-                    let tgl = ("0" + d.getDate()).slice(-2);
-                    let bln = ("0" + (d.getMonth() + 1)).slice(-2);
-                    let thn = d.getFullYear();
-                    let jam = ("0" + d.getHours()).slice(-2);
-                    let mnt = ("0" + d.getMinutes()).slice(-2);
-                    let dtk = ("0" + d.getSeconds()).slice(-2);
-                    waktuTampil = `${tgl}-${bln}-${thn} ${jam}:${mnt}:${dtk}`;
+                    let p = n => (n<10?'0':'')+n;
+                    waktuTampil = `${p(d.getDate())}-${p(d.getMonth()+1)}-${d.getFullYear()} ${p(d.getHours())}:${p(d.getMinutes())}:${p(d.getSeconds())}`;
                 }
             }
-            // Bersihkan tanda petik jika ada
             if(waktuTampil) waktuTampil = waktuTampil.replace(/'/g, ""); 
-            // ---------------------------------------------
-
-            let mapelDisplay = item.mapel ? item.mapel : "-";
-
-            rows.push([
-                index + 1,
-                item.nisn,
-                `<b>${item.nama}</b>`,
-                item.sekolah,
-                waktuTampil, // Waktu sudah rapi
-                `<span class="badge bg-info text-dark" style="font-size:0.9em">${mapelDisplay}</span>`,
-                `<div class="${valColor} fw-bold fs-5">${nilaiDisplay}</div>`,
-                badge
-            ]);
-        });
-
-        table.rows.add(rows).draw();
-
-        // Update Statistik
-        $('#stat-total').text(total);
-        $('#stat-selesai').text(selesai);
-        $('#stat-belum').text(total - selesai);
-
-        // LOGIKA TAMPILAN SESUAI ROLE
-        if (role === "PROKTOR_SD") {
-            $('#wrapper-filter').hide();
-            $('#judul-sekolah-proktor').html(`<i class="fas fa-school me-2"></i>${namaSekolahProktor}`).show();
-            $('#judul-print').text(namaSekolahProktor + " - Tahun 2026");
-        } else {
-            $('#wrapper-filter').show();
-            $('#judul-sekolah-proktor').hide();
-            $('#judul-print').text("Kecamatan Selogiri - Tahun 2026");
             
+            rows.push([index + 1, item.nisn, `<b>${item.nama}</b>`, item.sekolah, waktuTampil, `<span class="badge bg-info text-dark" style="font-size:0.9em">${item.mapel||'-'}</span>`, `<div class="${valColor} fw-bold fs-5">${item.nilai}</div>`, badge]);
+        });
+        table.rows.add(rows).draw();
+        $('#stat-total').text(total); $('#stat-selesai').text(selesai); $('#stat-belum').text(total - selesai);
+
+        if (role === "PROKTOR_SD") {
+            $('#wrapper-filter').hide(); $('#judul-sekolah-proktor').html(`<i class="fas fa-school me-2"></i>${namaSekolahProktor}`).show(); $('#judul-print').text(namaSekolahProktor + " - Tahun 2026");
+        } else {
+            $('#wrapper-filter').show(); $('#judul-sekolah-proktor').hide(); $('#judul-print').text("Kecamatan Selogiri - Tahun 2026");
             let filterHtml = '<option value="">-- Semua Sekolah --</option>';
-            Array.from(sekolahSet).sort().forEach(s => {
-                filterHtml += `<option value="${s}">${s}</option>`;
-            });
+            Array.from(sekolahSet).sort().forEach(s => { filterHtml += `<option value="${s}">${s}</option>`; });
             $('#filter-sekolah').html(filterHtml);
         }
     }
-
-    // Filter Sekolah (Admin Only)
-    function filterTable() {
-        let val = $('#filter-sekolah').val();
-        table.column(3).search(val).draw(); 
-    }
-
-    // Logika Sekoci
+    function filterTable() { let val = $('#filter-sekolah').val(); table.column(3).search(val).draw(); }
     function decodePreview() {
         let base64 = $('#input-base64').val().trim();
         try {
-            let jsonString = atob(base64); 
-            payloadSekoci = JSON.parse(jsonString);
-            $('#sekoci-nama').text(payloadSekoci.nama);
-            $('#sekoci-sekolah').text(payloadSekoci.sekolah);
-            $('#preview-sekoci').removeClass('d-none');
-            $('#btn-kirim-sekoci').prop('disabled', false);
+            payloadSekoci = JSON.parse(atob(base64));
+            $('#sekoci-nama').text(payloadSekoci.nama); $('#sekoci-sekolah').text(payloadSekoci.sekolah);
+            $('#preview-sekoci').removeClass('d-none'); $('#btn-kirim-sekoci').prop('disabled', false);
         } catch (e) { alert("Kode salah!"); }
     }
-
     function kirimManual() {
         if(!payloadSekoci) return;
-        let btn = $('#btn-kirim-sekoci');
-        btn.prop('disabled', true).text('Mengirim...');
-        
+        let btn = $('#btn-kirim-sekoci'); btn.prop('disabled', true).text('Mengirim...');
         $.ajax({
-            url: API_URL,
-            type: "POST",
-            data: { action: "admin_input_manual", data_jawaban: JSON.stringify(payloadSekoci) },
-            dataType: "json",
+            url: API_URL, type: "POST", data: { action: "admin_input_manual", data_jawaban: JSON.stringify(payloadSekoci) }, dataType: "json",
             success: function(resp) {
-                if(resp.status === "OK") {
-                    alert("✅ Sukses diselamatkan!");
-                    $('#modalSekoci').modal('hide');
-                    resetSekoci();
-                    $('#input-base64').val('');
-                    loadData(); 
-                } else { alert("Gagal: " + resp.pesan); }
+                if(resp.status === "OK") { alert("✅ Sukses diselamatkan!"); $('#modalSekoci').modal('hide'); resetSekoci(); $('#input-base64').val(''); loadData(); } else { alert("Gagal: " + resp.pesan); }
                 btn.prop('disabled', false).text('Kirim');
             }
         });
     }
-
-    function resetSekoci() {
-        $('#preview-sekoci').addClass('d-none');
-        payloadSekoci = null;
-    }
+    function resetSekoci() { $('#preview-sekoci').addClass('d-none'); payloadSekoci = null; }
 </script>
 
 </body>
