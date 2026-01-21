@@ -244,15 +244,15 @@
     // ===============================================================
     // KONFIGURASI PENTING
     // ===============================================================
-    // Paste URL Web App GAS Anda di sini:
+    // PASTE URL Web App Google Apps Script Anda di bawah ini:
     const API_URL = "https://script.google.com/macros/s/AKfycbyWJx6CT3JTr-Of1hwuTDavdXyAjFZQxTxQwnPS466iR8-lWQantSuOtAlUFxXx0DFo/exec"; 
     // ===============================================================
 
     // Variabel Global
     let DATA_SISWA = {};
     let PAKET_SOAL = [];
-    let JAWABAN_SISWA = {}; // Format: { "1": "A", "2": "C" }
-    let RAGU_RAGU = {};     // Format: { "1": true }
+    let JAWABAN_SISWA = {}; 
+    let RAGU_RAGU = {};     
     let CURRENT_INDEX = 0;
     let TIMER_INTERVAL;
     
@@ -305,55 +305,102 @@
         mulaiTimer(DATA_SISWA.durasi * 60); 
     }
 
-    // --- 3. ENGINE UJIAN ---
+    // --- 3. ENGINE UJIAN (MULTI-TYPE) ---
     function tampilkanSoal(index) {
         if(index < 0 || index >= PAKET_SOAL.length) return;
         
         CURRENT_INDEX = index;
         let soal = PAKET_SOAL[index];
+        let nomor = index + 1;
 
-        $('#no-soal-display').text(index + 1);
-        $('#tipe-soal').text(soal.tipe === 'PG' ? 'Pilihan Ganda' : 'Isian');
+        $('#no-soal-display').text(nomor);
+        
+        // Label Tipe Soal
+        let labelTipe = "Pilihan Ganda";
+        if(soal.tipe === 'BS') labelTipe = "Benar / Salah";
+        if(soal.tipe === 'ISIAN') labelTipe = "Isian Singkat";
+        if(soal.tipe === 'PGK') labelTipe = "Pilihan Ganda Kompleks";
+        $('#tipe-soal').text(labelTipe);
 
-        // Render Konten Soal
+        // Render Gambar & Teks Soal
         let html = '';
         if(soal.gambar) {
-            html += `<div class="text-center"><img src="${soal.gambar}" class="soal-img-utama"></div>`;
+            html += `<div class="text-center mb-3"><img src="${soal.gambar}" class="soal-img-utama"></div>`;
         }
-        html += `<p>${soal.text}</p>`;
+        html += `<div class="mb-4 font-weight-bold">${soal.text}</div>`;
         
-        // Render Opsi Jawaban (Dengan Deteksi Gambar)
+        // --- LOGIKA RENDER OPSI ---
         html += `<div class="opsi-block">`;
-        soal.opsi.forEach(op => {
-            let isChecked = (JAWABAN_SISWA[index + 1] === op.id) ? 'checked' : '';
-            
-            // LOGIKA DETEKSI GAMBAR DI OPSI
-            let kontenOpsi = op.val;
-            let isImage = op.val.match(/^http.*\.(jpg|jpeg|png|gif|webp)$/i);
-            
-            if (isImage) {
-                kontenOpsi = `<img src="${op.val}" alt="Opsi ${op.id}">`;
-            }
 
+        // CASE 1: ISIAN SINGKAT
+        if (soal.tipe === 'ISIAN') {
+            let val = JAWABAN_SISWA[nomor] || "";
             html += `
-                <div class="d-flex align-items-start mb-3">
-                    <div class="pt-1">
-                        <input type="radio" name="jawaban" class="radio-custom" id="opt_${op.id}" value="${op.id}" onchange="pilihJawaban('${op.id}')" ${isChecked}>
-                    </div>
-                    <label class="label-opsi ml-2 w-100" for="opt_${op.id}">
-                         <div class="d-flex align-items-center">
-                            <b class="mr-3 p-2 bg-light border rounded">${op.id}</b> 
-                            <div>${kontenOpsi}</div>
-                         </div>
-                    </label>
+                <div class="form-group">
+                    <label class="text-muted small">Ketik jawaban Anda di bawah ini:</label>
+                    <textarea class="form-control" rows="4" 
+                        placeholder="Tulis jawaban di sini..." 
+                        style="font-size:18px; border:2px solid #ccc;"
+                        onkeyup="simpanIsian(this.value)">${val}</textarea>
                 </div>
             `;
-        });
+        } 
+        // CASE 2: PG KOMPLEKS (TABEL BENAR/SALAH)
+        else if (soal.tipe === 'PGK') {
+            let savedAns = (JAWABAN_SISWA[nomor] || "").split("-");
+            
+            html += `
+                <table class="table table-bordered table-sm">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>Pernyataan</th>
+                            <th width="80" class="text-center">Benar</th>
+                            <th width="80" class="text-center">Salah</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            soal.opsi.forEach((op, idx) => {
+                let valBaris = savedAns[idx] || "X";
+                let checkB = (valBaris === "B") ? "checked" : "";
+                let checkS = (valBaris === "S") ? "checked" : "";
+
+                html += `
+                    <tr>
+                        <td class="align-middle px-3">${op.val}</td>
+                        <td class="text-center align-middle">
+                            <input type="radio" name="pgk_sub_${nomor}_${idx}" class="radio-custom" style="transform:scale(1.3)" onclick="simpanPGK(${nomor}, ${idx}, 'B')" ${checkB}>
+                        </td>
+                        <td class="text-center align-middle">
+                            <input type="radio" name="pgk_sub_${nomor}_${idx}" class="radio-custom" style="transform:scale(1.3)" onclick="simpanPGK(${nomor}, ${idx}, 'S')" ${checkS}>
+                        </td>
+                    </tr>
+                `;
+            });
+            html += `</tbody></table><small class="text-muted">* Pilih Benar atau Salah untuk setiap pernyataan.</small>`;
+        }
+        // CASE 3: BENAR / SALAH (BS) - MANUAL OPSI
+        else if (soal.tipe === 'BS') {
+            let opsiBS = [{id: "A", val: "BENAR"}, {id: "B", val: "SALAH"}];
+            opsiBS.forEach(op => {
+                let isChecked = (JAWABAN_SISWA[nomor] === op.id) ? 'checked' : '';
+                html += renderRadioHTML(op.id, op.val, isChecked);
+            });
+        }
+        // CASE 4: PILIHAN GANDA (DEFAULT)
+        else {
+            soal.opsi.forEach(op => {
+                let isChecked = (JAWABAN_SISWA[nomor] === op.id) ? 'checked' : '';
+                html += renderRadioHTML(op.id, op.val, isChecked);
+            });
+        }
+
         html += `</div>`;
 
         $('#kontainer-soal').html(html).hide().fadeIn(200);
 
-        // Update Navigasi
+        // Update UI Navigasi
         $('#btn-prev').prop('disabled', index === 0);
         if (index === PAKET_SOAL.length - 1) {
             $('#btn-next').hide();
@@ -363,38 +410,78 @@
             $('#btn-selesai').hide();
         }
 
-        $('#check-ragu').prop('checked', RAGU_RAGU[index + 1] || false);
-
+        $('#check-ragu').prop('checked', RAGU_RAGU[nomor] || false);
         $('.nomor-item').removeClass('active');
-        $(`#grid-btn-${index+1}`).addClass('active');
+        $(`#grid-btn-${nomor}`).addClass('active');
     }
 
-    function gantiSoal(arah) {
-        tampilkanSoal(CURRENT_INDEX + arah);
-    }
-
-    function lompatSoal(nomor) {
-        tampilkanSoal(nomor - 1);
-        // Di mobile, tutup panel navigasi setelah klik
-        if ($(window).width() < 768) {
-            $('.col-md-3').addClass('d-none');
+    // --- HELPER: Render HTML Radio Button (Untuk PG & BS) ---
+    function renderRadioHTML(id, text, checkedState) {
+        let konten = text;
+        // Deteksi Gambar di Opsi
+        if (text.match(/^http.*\.(jpg|jpeg|png|gif|webp)$/i)) {
+            konten = `<img src="${text}" alt="Opsi ${id}">`;
         }
+
+        return `
+            <div class="d-flex align-items-start mb-3">
+                <div class="pt-1">
+                    <input type="radio" name="jawaban" class="radio-custom" 
+                        id="opt_${id}" value="${id}" 
+                        onchange="pilihJawaban('${id}')" ${checkedState}>
+                </div>
+                <label class="label-opsi ml-2 w-100" for="opt_${id}">
+                     <div class="d-flex align-items-center">
+                        <b class="mr-3 p-2 bg-light border rounded text-center" style="width:40px">${id}</b> 
+                        <div>${konten}</div>
+                     </div>
+                </label>
+            </div>
+        `;
     }
 
-    // --- 4. LOGIKA SIMPAN & LOCALSTORAGE (ANTI-NANGIS) ---
+    // --- LOGIKA SIMPAN (AUTO-SAVE) ---
     function pilihJawaban(huruf) {
         let nomor = CURRENT_INDEX + 1;
         JAWABAN_SISWA[nomor] = huruf;
+        simpanKeLokal();
+        updateNavigasiUI(nomor);
+    }
+
+    function simpanIsian(teks) {
+        let nomor = CURRENT_INDEX + 1;
+        JAWABAN_SISWA[nomor] = teks;
+        simpanKeLokal();
+        updateNavigasiUI(nomor);
+    }
+
+    function simpanPGK(nomorSoal, indexSub, nilai) {
+        let oldString = JAWABAN_SISWA[nomorSoal];
+        let totalSub = PAKET_SOAL[CURRENT_INDEX].opsi.length;
+        let ansArray = oldString ? oldString.split("-") : new Array(totalSub).fill("X");
         
-        // Simpan ke LocalStorage
+        ansArray[indexSub] = nilai;
+        JAWABAN_SISWA[nomorSoal] = ansArray.join("-");
+        
+        simpanKeLokal();
+        updateNavigasiUI(nomorSoal);
+    }
+
+    function simpanKeLokal() {
         let key = `tka_${DATA_SISWA.nisn}_ans`;
         localStorage.setItem(key, JSON.stringify(JAWABAN_SISWA));
-
-        updateNavigasiUI(nomor);
         
-        // Indikator "Tersimpan"
+        // Efek Visual
         $('#status-simpan').css('opacity', '1');
-        setTimeout(() => { $('#status-simpan').css('opacity', '0'); }, 1500);
+        setTimeout(() => { $('#status-simpan').css('opacity', '0'); }, 1000);
+    }
+
+    // --- NAVIGASI & UTILS ---
+    function gantiSoal(arah) { tampilkanSoal(CURRENT_INDEX + arah); }
+    
+    function lompatSoal(nomor) { 
+        tampilkanSoal(nomor - 1);
+        if ($(window).width() < 768) $('.col-md-3').addClass('d-none'); // Tutup menu di HP
     }
 
     function toggleRagu() {
@@ -427,9 +514,7 @@
     function restoreSesiLokal() {
         let key = `tka_${DATA_SISWA.nisn}_ans`;
         let saved = localStorage.getItem(key);
-        if(saved) {
-            JAWABAN_SISWA = JSON.parse(saved);
-        }
+        if(saved) JAWABAN_SISWA = JSON.parse(saved);
     }
 
     // --- 5. SUBMIT JAWABAN (DENGAN RETRY & SEKOCI) ---
@@ -450,7 +535,6 @@
 
         $('#btn-kirim-server').prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Mengirim...');
         
-        // Retry Logic (Mencoba 3 kali)
         let attempt = 0;
         const maxAttempt = 3;
 
@@ -483,7 +567,7 @@
 
         function handleFail() {
             // MODE SEKOCI AKTIF
-            let kodeAman = btoa(JSON.stringify(payload)); // Encode Base64
+            let kodeAman = btoa(JSON.stringify(payload)); 
             $('#kode-penyelamat').val(kodeAman);
             $('#box-darurat').slideDown();
             $('#btn-kirim-server').hide();
@@ -493,9 +577,7 @@
     }
 
     // --- 6. UTILS (Timer & Font) ---
-    function ubahFont(size) {
-        $('.soal-container').css('font-size', size + 'px');
-    }
+    function ubahFont(size) { $('.soal-container').css('font-size', size + 'px'); }
 
     function mulaiTimer(seconds) {
         let timeLeft = seconds;
