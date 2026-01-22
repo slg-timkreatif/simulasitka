@@ -11,38 +11,47 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
     <style>
-        /* CSS ASLI (TIDAK DIUBAH, HANYA DIRAPIKAN) */
+        /* --- GAYA UMUM --- */
         body { background-color: #f0f3f5; font-family: 'Segoe UI', sans-serif; -webkit-user-select: none; user-select: none; }
-        .header-top { background:#326698; height:100px; position:fixed; top:0; left:0; right:0; z-index:999; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
-        .wrapper-login { margin-top: 130px; }
-        .card-login { background: #fff; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); padding: 30px; min-height: 350px; }
-        .input-clean { border: none; border-bottom: 2px solid #ddd; width: 100%; padding: 10px; background: #f9f9f9; transition: 0.3s; }
-        .input-clean:focus { outline: none; border-bottom: 2px solid #326698; background: #fff; }
         
+        /* LOGIN PAGE */
+        .header-top { background:#326698; height:100px; position:fixed; top:0; left:0; right:0; z-index:999; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+        .wrapper-login { margin-top: 130px; margin-bottom: 50px; }
+        .card-login { background: #fff; border-radius: 10px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); padding: 40px 30px; min-height: 400px; border:none; }
+        .input-clean { border: none; border-bottom: 2px solid #eee; width: 100%; padding: 12px; background: #fdfdfd; transition: 0.3s; font-size: 16px; }
+        .input-clean:focus { outline: none; border-bottom: 2px solid #326698; background: #fff; }
+        .footer-credit { margin-top: 30px; color: #888; font-size: 13px; font-weight: 500; letter-spacing: 0.5px; opacity: 0.8; }
+        
+        /* UJIAN VIEW */
         #view-ujian { display: none; padding-top: 60px; padding-bottom: 80px; } 
         .info-peserta-bar { position: fixed; top: 0; left: 0; right: 0; height: 50px; background: #212529; color: white; z-index: 1000; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.3); }
         .timer-badge { background: #2980b9; padding: 5px 15px; border-radius: 20px; font-weight: bold; border: 1px solid #fff; }
         
-        .soal-card { border: none; box-shadow: 0 2px 5px rgba(0,0,0,0.05); min-height: 70vh; background:white; border-radius:5px; padding:20px;}
-        .soal-header { background: #fff; border-bottom: 2px solid #eee; padding: 15px 20px; margin-bottom:15px; }
-        .soal-container { font-size: 18px; line-height: 1.6; }
+        /* SOAL CARD */
+        .soal-card { border: none; box-shadow: 0 2px 5px rgba(0,0,0,0.05); min-height: 70vh; background:white; border-radius:8px; padding:25px; }
+        .soal-header { background: #fff; border-bottom: 2px solid #f0f0f0; padding-bottom: 15px; margin-bottom:20px; }
+        .soal-container { font-size: 18px; line-height: 1.7; color: #333; }
         .soal-img-utama { max-width: 100%; height: auto; margin-bottom: 20px; border: 1px solid #ddd; border-radius: 5px; }
         
+        /* OPSI JAWABAN */
         .radio-custom { transform: scale(1.5); margin-top: 5px; cursor: pointer; }
-        .label-opsi { cursor: pointer; width: 100%; display: block; padding: 10px; border-radius: 5px; transition: 0.2s; border: 1px solid #eee; }
-        .label-opsi:hover { background-color: #e9ecef; }
+        .label-opsi { cursor: pointer; width: 100%; display: block; padding: 12px 15px; border-radius: 6px; transition: 0.2s; border: 1px solid #e9ecef; background: #fff; }
+        .label-opsi:hover { background-color: #f8f9fa; border-color:#ccc; }
+        .radio-custom:checked + label { background-color: #e3f2fd; border-color: #90caf9; color: #0d47a1; }
         .label-opsi img { max-height: 150px; border-radius: 4px; border: 1px solid #ccc; }
 
-        .nav-panel { background: #fff; padding: 15px; border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        /* NAVIGASI KANAN */
+        .nav-panel { background: #fff; padding: 15px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
         .nomor-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-top: 15px; }
-        .nomor-item { border: 1px solid #555; text-align: center; padding: 8px 0; cursor: pointer; font-size: 14px; font-weight: bold; border-radius: 3px; background: #fff; }
+        .nomor-item { border: 1px solid #6c757d; text-align: center; padding: 8px 0; cursor: pointer; font-size: 14px; font-weight: bold; border-radius: 4px; background: #fff; transition:0.2s; }
         .nomor-item:hover { background: #eee; }
-        .nomor-item.active { border: 2px solid #007bff; box-shadow: 0 0 5px rgba(0,123,255,0.5); }
-        .nomor-item.answered { background-color: #212529; color: white; border-color: #000; }
-        .nomor-item.ragu { background-color: #ffc107; color: black; border-color: #d39e00; }
+        .nomor-item.active { border: 2px solid #007bff; box-shadow: 0 0 8px rgba(0,123,255,0.4); transform: scale(1.05); z-index:2; }
+        .nomor-item.answered { background-color: #343a40; color: white; border-color: #343a40; }
+        .nomor-item.ragu { background-color: #ffc107; color: black; border-color: #e0a800; }
         
-        .footer-nav { position: fixed; bottom: 0; left: 0; right: 0; background: #f8f9fa; padding: 12px; z-index: 1000; border-top: 1px solid #ccc; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); }
-        .loader-overlay { position: fixed; top:0; left:0; right:0; bottom:0; background: rgba(255,255,255,0.9); z-index: 99999; display: none; align-items: center; justify-content: center; flex-direction: column; }
+        /* FOOTER & LAINNYA */
+        .footer-nav { position: fixed; bottom: 0; left: 0; right: 0; background: #fff; padding: 12px; z-index: 1000; border-top: 1px solid #ddd; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); }
+        .loader-overlay { position: fixed; top:0; left:0; right:0; bottom:0; background: rgba(255,255,255,0.95); z-index: 99999; display: none; align-items: center; justify-content: center; flex-direction: column; }
         .font-control { cursor: pointer; margin-left: 15px; color: #ccc; font-weight: bold; user-select: none; }
         .font-control:hover { color: #fff; }
         .emergency-box { display: none; margin-top: 15px; border: 2px dashed #dc3545; padding: 15px; background: #fff5f5; border-radius: 5px; }
@@ -51,33 +60,55 @@
 <body>
 
 <div class="loader-overlay" id="loader">
-    <img src="https://pusmendik.kemdikbud.go.id/tka/_assets/images/loader2.gif" width="60">
-    <div class="mt-3 font-weight-bold" id="loader-text">Memuat Sistem...</div>
+    <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status"></div>
+    <div class="mt-3 font-weight-bold text-dark">Sedang Memuat...</div>
 </div>
 
 <div id="view-login">
     <div class="container-fluid text-white header-top">
         <div class="row pt-3 pl-4 align-items-center">
-            <div class="col-auto"><img src="https://pusmendik.kemdikbud.go.id/tka/images/logo-kemdikbud-71x72.png" height="60"></div>
-            <div class="col"><h4 class="m-0 font-weight-bold">SIMULASI TKA BERBASIS WEB</h4><small>Kecamatan Selogiri - Tahun 2026</small></div>
+            <div class="col-auto">
+                <img src="https://pusmendik.kemdikbud.go.id/tka/images/logo-kemdikbud-71x72.png" height="60">
+            </div>
+            <div class="col">
+                <h4 class="m-0 font-weight-bold">SIMULASI TKA</h4>
+                <small style="opacity:0.9">Kecamatan Selogiri - Tahun 2026</small>
+            </div>
         </div>
     </div>
+
     <div class="container wrapper-login">
         <div class="row justify-content-center">
             <div class="col-md-6 mb-4 d-none d-md-block">
-                <div class="card-login d-flex flex-column justify-content-center align-items-center text-center" style="background: linear-gradient(135deg, #326698 0%, #2a527a 100%); color: white;">
-                    <i class="fas fa-user-graduate fa-5x mb-4"></i>
-                    <h3>Selamat Datang</h3>
-                    <p class="px-4">Silakan masukkan NISN dan Token Ujian yang tertera di papan tulis untuk memulai sesi.</p>
+                <div class="card-login d-flex flex-column justify-content-center align-items-center text-center text-white" style="background: linear-gradient(135deg, #326698 0%, #1c4e80 100%);">
+                    <i class="fas fa-user-graduate fa-6x mb-4 opacity-75"></i>
+                    <h3 class="font-weight-bold">Selamat Datang</h3>
+                    <p class="px-4 mt-2">Silakan masukkan <b>NISN</b> dan <b>Token Ujian</b> yang tertera di papan tulis untuk memulai sesi ujian.</p>
                 </div>
             </div>
+
             <div class="col-md-6">
                 <div class="card-login">
-                    <h4 class="mb-4 text-dark font-weight-bold border-bottom pb-2">Login Peserta</h4>
+                    <h4 class="mb-4 text-dark font-weight-bold text-center border-bottom pb-3">LOGIN PESERTA</h4>
                     <form onsubmit="return false;">
-                        <div class="form-group mb-4"><label class="text-muted small font-weight-bold">NISN / ID PESERTA</label><input type="text" class="input-clean" id="input-nisn" placeholder="Contoh: 0012345678" required autocomplete="off"></div>
-                        <div class="form-group mb-4"><label class="text-muted small font-weight-bold">TOKEN UJIAN</label><input type="text" class="input-clean" id="input-token" placeholder="Ketik Token (Huruf Besar)" required autocomplete="off" style="text-transform:uppercase;"></div>
-                        <div class="mt-5"><button class="btn btn-primary btn-block btn-lg rounded-pill shadow" onclick="prosesLogin()"><i class="fas fa-sign-in-alt mr-2"></i> MASUK</button></div>
+                        <div class="form-group mb-4">
+                            <label class="text-secondary small font-weight-bold text-uppercase"><i class="fas fa-id-card mr-1"></i> NISN / ID Peserta</label>
+                            <input type="text" class="input-clean" id="input-nisn" placeholder="Masukkan NISN..." required autocomplete="off">
+                        </div>
+                        <div class="form-group mb-4">
+                            <label class="text-secondary small font-weight-bold text-uppercase"><i class="fas fa-key mr-1"></i> Token Ujian</label>
+                            <input type="text" class="input-clean" id="input-token" placeholder="Masukkan Token (Huruf Besar)" required autocomplete="off" style="text-transform:uppercase;">
+                        </div>
+                        
+                        <div class="mt-5">
+                            <button class="btn btn-primary btn-block btn-lg rounded-pill shadow-sm font-weight-bold" onclick="prosesLogin()">
+                                MASUK SEKARANG <i class="fas fa-arrow-right ml-2"></i>
+                            </button>
+                        </div>
+
+                        <div class="text-center footer-credit">
+                            <i class="fas fa-code mr-1"></i> Tim Kreatif Kecamatan Selogiri | 2026
+                        </div>
                     </form>
                 </div>
             </div>
@@ -87,11 +118,19 @@
 
 <div id="view-ujian">
     <div class="info-peserta-bar">
-        <div class="d-flex align-items-center"><i class="fas fa-user-circle mr-2 fa-lg"></i><span id="nama-siswa-display" class="font-weight-bold mr-2">Peserta</span><span class="d-none d-md-inline">| <span id="sekolah-display">Sekolah</span></span></div>
         <div class="d-flex align-items-center">
-            <span class="badge badge-warning text-dark mr-3" id="label-mapel">MAPEL</span>
-            <span class="font-control small" onclick="ubahFont(16)">A</span><span class="font-control medium" onclick="ubahFont(20)">A+</span><span class="font-control large" onclick="ubahFont(24)">A++</span>
-            <div class="ml-4 timer-badge"><i class="fas fa-clock mr-1"></i> <span id="timer-display">00:00:00</span></div>
+            <i class="fas fa-user-circle mr-2 fa-lg"></i>
+            <span id="nama-siswa-display" class="font-weight-bold mr-2 text-truncate" style="max-width:150px;">Peserta</span>
+            <span class="d-none d-md-inline small opacity-75">| <span id="sekolah-display">Sekolah</span></span>
+        </div>
+        <div class="d-flex align-items-center">
+            <span class="badge badge-warning text-dark mr-3 shadow-sm" id="label-mapel">MAPEL</span>
+            <span class="font-control small" onclick="ubahFont(16)">A</span>
+            <span class="font-control medium" onclick="ubahFont(20)">A+</span>
+            <span class="font-control large" onclick="ubahFont(24)">A++</span>
+            <div class="ml-4 timer-badge shadow-sm">
+                <i class="fas fa-clock mr-1"></i> <span id="timer-display">00:00:00</span>
+            </div>
         </div>
     </div>
 
@@ -99,21 +138,34 @@
         <div class="row">
             <div class="col-md-9 mb-5">
                 <div class="card soal-card">
-                    <div class="soal-header"><div class="d-flex justify-content-between align-items-center"><h5 class="m-0 text-primary font-weight-bold">SOAL NO. <span id="no-soal-display" style="font-size: 1.2em;">1</span></h5><span class="badge badge-secondary p-2" id="tipe-soal">PG</span></div></div>
-                    <div class="soal-container" id="kontainer-soal"></div>
+                    <div class="soal-header">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h5 class="m-0 text-primary font-weight-bold">SOAL NO. <span id="no-soal-display" style="font-size: 1.2em;">1</span></h5>
+                            <span class="badge badge-secondary p-2 shadow-sm" id="tipe-soal">Pilihan Ganda</span>
+                        </div>
+                    </div>
+                    <div class="soal-container" id="kontainer-soal">
+                        </div>
                 </div>
             </div>
+
             <div class="col-md-3 d-none d-md-block">
                 <div class="nav-panel">
-                    <h6 class="font-weight-bold border-bottom pb-2">Daftar Soal</h6>
+                    <h6 class="font-weight-bold border-bottom pb-2">Navigasi Soal</h6>
                     <div class="nomor-grid" id="grid-nomor"></div>
+                    
                     <div class="mt-4 p-2 bg-light rounded border">
                         <div class="custom-control custom-checkbox">
                             <input type="checkbox" class="custom-control-input" id="check-ragu" onchange="toggleRagu()">
                             <label class="custom-control-label text-warning font-weight-bold" for="check-ragu" style="cursor:pointer">Ragu - Ragu</label>
                         </div>
                     </div>
-                    <div class="mt-3 small text-muted"><div><span class="badge badge-dark px-2 mr-1">&nbsp;</span> Sudah Dijawab</div><div class="mt-1"><span class="badge badge-warning px-2 mr-1">&nbsp;</span> Ragu-ragu</div><div class="mt-1"><span class="badge border px-2 mr-1 bg-white">&nbsp;</span> Belum Dijawab</div></div>
+
+                    <div class="mt-3 small text-muted">
+                        <div><span class="badge badge-dark px-2 mr-1">&nbsp;</span> Sudah Dijawab</div>
+                        <div class="mt-1"><span class="badge badge-warning px-2 mr-1">&nbsp;</span> Ragu-ragu</div>
+                        <div class="mt-1"><span class="badge border px-2 mr-1 bg-white">&nbsp;</span> Belum Dijawab</div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -122,68 +174,150 @@
     <div class="footer-nav">
         <div class="container-fluid">
             <div class="row align-items-center">
-                <div class="col-4"><button class="btn btn-secondary shadow-sm" id="btn-prev" onclick="gantiSoal(-1)"><i class="fa fa-chevron-left mr-1"></i> Sebelumnya</button></div>
-                <div class="col-4 text-center"><span id="status-simpan" class="badge badge-success px-3 py-2" style="opacity:0; transition:0.5s"><i class="fas fa-save mr-1"></i> Tersimpan</span><button class="btn btn-outline-dark btn-sm d-md-none ml-2" onclick="$('.col-md-3').toggleClass('d-none d-block')"><i class="fas fa-th"></i></button></div>
-                <div class="col-4 text-right"><button class="btn btn-primary shadow-sm" id="btn-next" onclick="gantiSoal(1)">Selanjutnya <i class="fa fa-chevron-right ml-1"></i></button><button class="btn btn-danger shadow" id="btn-selesai" onclick="konfirmasiSelesai()" style="display:none;"><i class="fas fa-check-circle mr-1"></i> Selesai Ujian</button></div>
+                <div class="col-4">
+                    <button class="btn btn-secondary shadow-sm" id="btn-prev" onclick="gantiSoal(-1)">
+                        <i class="fa fa-chevron-left mr-1"></i> Sebelumnya
+                    </button>
+                </div>
+                <div class="col-4 text-center">
+                    <span id="status-simpan" class="badge badge-success px-3 py-2 shadow-sm" style="opacity:0; transition:0.5s">
+                        <i class="fas fa-check mr-1"></i> Tersimpan
+                    </span>
+                    <button class="btn btn-outline-dark btn-sm d-md-none ml-2" onclick="$('.col-md-3').toggleClass('d-none d-block')">
+                        <i class="fas fa-th"></i>
+                    </button>
+                </div>
+                <div class="col-4 text-right">
+                    <button class="btn btn-primary shadow-sm" id="btn-next" onclick="gantiSoal(1)">
+                        Selanjutnya <i class="fa fa-chevron-right ml-1"></i>
+                    </button>
+                    <button class="btn btn-danger shadow" id="btn-selesai" onclick="konfirmasiSelesai()" style="display:none;">
+                        <i class="fas fa-paper-plane mr-1"></i> Selesai
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="infoModal" tabindex="-1" role="dialog" data-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header bg-primary text-white border-0">
+                <h6 class="modal-title font-weight-bold" id="infoModalTitle"><i class="fas fa-info-circle mr-2"></i>Informasi</h6>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body text-center py-4">
+                <div id="infoModalIcon" class="mb-3 text-primary"><i class="fas fa-bell fa-3x"></i></div>
+                <p id="infoModalBody" class="mb-0 font-weight-bold text-dark">Pesan sistem...</p>
+            </div>
+            <div class="modal-footer justify-content-center bg-light border-0">
+                <button type="button" class="btn btn-primary px-4 rounded-pill" data-dismiss="modal">OKE</button>
             </div>
         </div>
     </div>
 </div>
 
 <div class="modal fade" id="modalSelesai" tabindex="-1" role="dialog" data-backdrop="static">
-    <div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header bg-primary text-white"><h5 class="modal-title">Konfirmasi Selesai</h5></div><div class="modal-body"><p>Apakah Anda yakin ingin mengakhiri ujian ini?</p><div class="alert alert-warning small"><i class="fas fa-exclamation-triangle mr-1"></i> Pastikan tidak ada jawaban yang masih berwarna <b>Kuning (Ragu-ragu)</b>.</div><div class="emergency-box" id="box-darurat"><h6 class="font-weight-bold text-danger"><i class="fas fa-wifi"></i> KONEKSI GAGAL!</h6><p class="small mb-2">Jangan panik. Sistem gagal mengirim data ke server. Silakan <b>FOTO KODE DI BAWAH INI</b> dan tunjukkan ke Pengawas/Guru.</p><textarea class="form-control font-weight-bold text-monospace" rows="4" id="kode-penyelamat" readonly style="font-size:12px; background:#eee;"></textarea></div></div><div class="modal-footer"><button type="button" class="btn btn-secondary" data-dismiss="modal">Kembali Mengerjakan</button><button type="button" class="btn btn-success" id="btn-kirim-server" onclick="kirimJawaban()">Ya, Selesai</button></div></div></div>
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title font-weight-bold"><i class="fas fa-check-circle mr-2"></i>Konfirmasi Selesai</h5>
+            </div>
+            <div class="modal-body">
+                <p>Apakah Anda yakin ingin mengakhiri ujian ini?</p>
+                <div class="alert alert-warning small border-left-warning shadow-sm">
+                    <i class="fas fa-exclamation-triangle mr-2"></i> Pastikan tidak ada jawaban yang masih berwarna <b>Kuning (Ragu-ragu)</b>.
+                </div>
+                <div class="emergency-box" id="box-darurat">
+                    <h6 class="font-weight-bold text-danger"><i class="fas fa-wifi mr-2"></i> KONEKSI TERPUTUS!</h6>
+                    <p class="small mb-2 text-muted">Sistem gagal mengirim data. Silakan <b>FOTO KODE DI BAWAH INI</b> dan tunjukkan ke Pengawas.</p>
+                    <textarea class="form-control font-weight-bold text-monospace" rows="4" id="kode-penyelamat" readonly style="font-size:12px; background:#f8f9fa; border:1px solid #ddd;"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer bg-light">
+                <button type="button" class="btn btn-secondary rounded-pill" data-dismiss="modal">Kembali</button>
+                <button type="button" class="btn btn-success rounded-pill shadow-sm" id="btn-kirim-server" onclick="kirimJawaban()">Ya, Selesai</button>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script>
     // ===============================================================
-    // KONFIGURASI PENTING
+    // KONFIGURASI URL (BACKEND)
     // ===============================================================
     const API_URL = "https://script.google.com/macros/s/AKfycbyWJx6CT3JTr-Of1hwuTDavdXyAjFZQxTxQwnPS466iR8-lWQantSuOtAlUFxXx0DFo/exec"; 
     // ===============================================================
 
     let DATA_SISWA = {}, PAKET_SOAL = [], JAWABAN_SISWA = {}, RAGU_RAGU = {}, CURRENT_INDEX = 0, TIMER_INTERVAL;
     
-    function prosesLogin() {
-        let nisn = $('#input-nisn').val().trim(), token = $('#input-token').val().trim();
-        if(!nisn || !token) { alert("NISN dan Token harus diisi!"); return; }
-        $('#loader').css('display', 'flex'); $('#loader-text').text('Memeriksa Data Peserta...');
+    // --- HELPER: CUSTOM ALERT CANTIK ---
+    function appAlert(pesan, tipe="info") {
+        let icon = "fa-info-circle";
+        let color = "text-primary";
+        let title = "Informasi";
+        
+        if(tipe === "error") { icon = "fa-times-circle"; color = "text-danger"; title = "Kesalahan"; }
+        if(tipe === "warning") { icon = "fa-exclamation-triangle"; color = "text-warning"; title = "Peringatan"; }
+        if(tipe === "success") { icon = "fa-check-circle"; color = "text-success"; title = "Berhasil"; }
 
+        $('#infoModalTitle').html(`<i class="fas ${icon} mr-2"></i>${title}`);
+        $('#infoModalIcon').html(`<i class="fas ${icon} fa-3x"></i>`).attr('class', `mb-3 ${color}`);
+        $('.modal-header').attr('class', `modal-header text-white border-0 bg-${tipe === 'error' ? 'danger' : (tipe === 'success' ? 'success' : 'primary')}`);
+        $('#infoModalBody').html(pesan);
+        $('#infoModal').modal('show');
+    }
+
+    // --- 1. LOGIN ---
+    function prosesLogin() {
+        let nisn = $('#input-nisn').val().trim();
+        let token = $('#input-token').val().trim();
+
+        if(!nisn || !token) { appAlert("Mohon lengkapi <b>NISN</b> dan <b>Token</b> ujian!", "warning"); return; }
+
+        $('#loader').css('display', 'flex');
         $.ajax({
             url: API_URL, type: "POST", data: { action: "login", nisn: nisn, token: token }, dataType: "json",
             success: function(resp) {
                 if(resp.status === "SUKSES") {
                     DATA_SISWA = resp.data;
-                    // Simpan Info Penting
-                    DATA_SISWA.kode_mapel = resp.data.kode_mapel;
-                    DATA_SISWA.kode_paket = resp.data.kode_paket;
-                    DATA_SISWA.deadline = resp.data.deadline_server; // INI WAKTU ABSOLUT
-                    
                     PAKET_SOAL = resp.data.soal;
                     localStorage.setItem('current_nisn', DATA_SISWA.nisn);
                     siapkanUjian();
-                } else { alert(resp.pesan); $('#loader').fadeOut(); }
+                } else {
+                    $('#loader').fadeOut();
+                    appAlert(resp.pesan, "error");
+                }
             },
-            error: function(err) { alert("Gagal terhubung ke server."); $('#loader').fadeOut(); }
+            error: function() {
+                $('#loader').fadeOut();
+                appAlert("Gagal terhubung ke server. Cek koneksi internet Anda.", "error");
+            }
         });
     }
 
+    // --- 2. SETUP UJIAN ---
     function siapkanUjian() {
         $('#view-login').fadeOut(500, function() { $('#view-ujian').fadeIn(); }); $('#loader').fadeOut();
-        $('#nama-siswa-display').text(DATA_SISWA.nama); $('#sekolah-display').text(DATA_SISWA.sekolah);
-        $('#label-mapel').text(DATA_SISWA.mapel + " (" + DATA_SISWA.kode_paket + ")"); // Nama Mapel Otomatis
+        $('#nama-siswa-display').text(DATA_SISWA.nama);
+        $('#sekolah-display').text(DATA_SISWA.sekolah);
+        $('#label-mapel').text(DATA_SISWA.mapel + " (" + DATA_SISWA.kode_paket + ")");
 
         restoreSesiLokal(); renderNavigasi(); tampilkanSoal(0);
-        // Timer Server Absolut
-        mulaiTimerAbsolut(DATA_SISWA.deadline); 
+        mulaiTimerAbsolut(DATA_SISWA.deadline_server); 
     }
 
     function mulaiTimerAbsolut(deadlineMillis) {
         TIMER_INTERVAL = setInterval(function() {
             let now = new Date().getTime();
-            let distance = deadlineMillis - now; // Selisih Deadline vs Waktu Sekarang
+            let distance = deadlineMillis - now;
             if (distance < 0) {
-                clearInterval(TIMER_INTERVAL); $('#timer-display').text("00:00:00");
-                alert("WAKTU HABIS! Jawaban akan dikirim otomatis."); kirimJawaban(); return;
+                clearInterval(TIMER_INTERVAL);
+                $('#timer-display').text("00:00:00");
+                appAlert("Waktu Ujian Telah Habis! Jawaban akan dikirim otomatis.", "warning");
+                setTimeout(kirimJawaban, 2000);
+                return;
             }
             let h = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
             let m = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
@@ -192,6 +326,7 @@
         }, 1000);
     }
 
+    // --- 3. RENDER SOAL (SPLIT & DYNAMIC) ---
     function tampilkanSoal(index) {
         if(index < 0 || index >= PAKET_SOAL.length) return;
         CURRENT_INDEX = index; let soal = PAKET_SOAL[index], nomor = index + 1;
@@ -203,54 +338,56 @@
         else if(soal.tipe.startsWith('PGK')) labelTipe = "PG Kompleks";
         $('#tipe-soal').text(labelTipe);
 
-        // --- SPLIT SCREEN WACANA / GAMBAR ---
         let html = '';
+        // LOGIKA SPLIT SCREEN WACANA
         if(soal.wacana && soal.wacana.trim() !== "") {
             let isiWacana = soal.wacana;
-            // Deteksi Link Gambar (jpg, png, dll)
             if (isiWacana.match(/^http.*\.(jpg|jpeg|png|gif|webp)$/i)) {
-                isiWacana = `<div class="text-center"><img src="${isiWacana}" class="img-fluid" style="width:100%; border-radius:5px; border:1px solid #ddd;"></div>`;
+                isiWacana = `<div class="text-center"><img src="${isiWacana}" class="img-fluid rounded border shadow-sm"></div>`;
             }
-            // Layout Split (Kiri Wacana - Kanan Soal)
-            html += `<div class="row"><div class="col-md-6 mb-3"><div class="card bg-light border-info h-100"><div class="card-header bg-info text-white py-1 small font-weight-bold"><i class="fas fa-book-open mr-2"></i>WACANA / INFO SOAL</div><div class="card-body" style="max-height:500px; overflow-y:auto;">${isiWacana}</div></div></div><div class="col-md-6">`;
-        } else {
-            html += `<div>`; // Div Pembungkus Normal
-        }
+            html += `<div class="row"><div class="col-md-6 mb-3"><div class="card bg-light border-0 h-100 shadow-sm"><div class="card-header bg-info text-white font-weight-bold"><i class="fas fa-book-open mr-2"></i>WACANA / GAMBAR</div><div class="card-body" style="max-height:500px; overflow-y:auto;">${isiWacana}</div></div></div><div class="col-md-6">`;
+        } else { html += `<div>`; }
 
-        // --- KONTEN SOAL ---
-        if(soal.gambar) html += `<div class="text-center mb-3"><img src="${soal.gambar}" class="soal-img-utama"></div>`;
-        html += `<div class="mb-4 font-weight-bold">${soal.text}</div><div class="opsi-block">`;
+        // KONTEN SOAL
+        if(soal.gambar) html += `<div class="text-center mb-3"><img src="${soal.gambar}" class="soal-img-utama shadow-sm"></div>`;
+        html += `<div class="mb-4 font-weight-bold text-dark">${soal.text}</div><div class="opsi-block">`;
 
-        // --- OPSI JAWABAN ---
+        // RENDER OPSI
         if (soal.tipe === 'ISIAN') {
             let val = JAWABAN_SISWA[nomor] || "";
-            html += `<div class="form-group"><textarea class="form-control" rows="4" placeholder="Ketik jawaban..." style="font-size:18px; border:2px solid #ccc;" onkeyup="simpanIsian(this.value)">${val}</textarea></div>`;
+            html += `<div class="form-group"><textarea class="form-control shadow-sm" rows="4" placeholder="Ketik jawaban Anda di sini..." style="font-size:18px; border:2px solid #ccc;" onkeyup="simpanIsian(this.value)">${val}</textarea></div>`;
         } 
         else if (soal.tipe.startsWith('PGK')) {
-            // JUDUL KOLOM DINAMIS (Sesuai, Tidak Sesuai, dll)
             let h1="Benar", h2="Salah", v1="B", v2="S";
-            let match = soal.tipe.match(/PGK\((.+),(.+)\)/); // Regex: PGK(S,TS)
+            let match = soal.tipe.match(/PGK\((.+),(.+)\)/);
             if(match) { h1=match[1].trim(); h2=match[2].trim(); v1=h1; v2=h2; }
-
             let savedAns = (JAWABAN_SISWA[nomor] || "").split("-");
-            html += `<table class="table table-bordered table-sm"><thead class="thead-light"><tr><th>Pernyataan</th><th width="80" class="text-center">${h1}</th><th width="80" class="text-center">${h2}</th></tr></thead><tbody>`;
+            html += `<table class="table table-bordered table-sm table-hover shadow-sm"><thead class="thead-light"><tr><th class="align-middle">Pernyataan</th><th width="80" class="text-center align-middle">${h1}</th><th width="80" class="text-center align-middle">${h2}</th></tr></thead><tbody>`;
             soal.opsi.forEach((op, idx) => {
-                let val = savedAns[idx] || "X", c1=(val===v1)?'checked':'', c2=(val===v2)?'checked':'';
-                html += `<tr><td class="align-middle px-3">${op.val}</td><td class="text-center"><input type="radio" name="pgk_${nomor}_${idx}" class="radio-custom" onclick="simpanPGK(${nomor},${idx},'${v1}')" ${c1}></td><td class="text-center"><input type="radio" name="pgk_${nomor}_${idx}" class="radio-custom" onclick="simpanPGK(${nomor},${idx},'${v2}')" ${c2}></td></tr>`;
+                let v = savedAns[idx] || "X", c1 = (v===v1) ? "checked" : "", c2 = (v===v2) ? "checked" : "";
+                // TRIK: Name unique per baris
+                html += `<tr><td class="align-middle px-3">${op.val}</td><td class="text-center align-middle"><input type="radio" name="pgk_${nomor}_${idx}" class="radio-custom" onclick="simpanPGK(${nomor}, ${idx}, '${v1}')" ${c1}></td><td class="text-center align-middle"><input type="radio" name="pgk_${nomor}_${idx}" class="radio-custom" onclick="simpanPGK(${nomor}, ${idx}, '${v2}')" ${c2}></td></tr>`;
             });
             html += `</tbody></table>`;
         } 
-        else { // TIPE PILIHAN GANDA & BENAR SALAH
+        else { // PG & BS
             let opsiBS = [{id: "A", val: "BENAR"}, {id: "B", val: "SALAH"}];
             let listOpsi = (soal.tipe === 'BS') ? opsiBS : soal.opsi;
             listOpsi.forEach(op => {
                 let isChecked = (JAWABAN_SISWA[nomor] === op.id) ? 'checked' : '';
-                let txt = op.val.match(/^http/) ? `<img src="${op.val}" style="max-height:150px">` : op.val;
-                html += `<div class="d-flex align-items-start mb-3"><div class="pt-1"><input type="radio" name="jw" class="radio-custom" onclick="pilihJawaban('${op.id}')" ${isChecked}></div><label class="label-opsi ml-2 w-100"><div class="d-flex align-items-center"><b class="mr-3 p-2 bg-light border rounded text-center" style="width:40px">${op.id}</b> <div>${txt}</div></div></label></div>`;
+                let txt = op.val.match(/^http/)?`<img src="${op.val}" style="max-height:150px">`:op.val;
+                let uid = `opt_${nomor}_${op.id}`;
+                html += `
+                <div class="d-flex align-items-start mb-3">
+                    <div class="pt-1"><input type="radio" name="jw" class="radio-custom" id="${uid}" onclick="pilihJawaban('${op.id}')" ${isChecked}></div>
+                    <label class="label-opsi ml-2 w-100 shadow-sm" for="${uid}">
+                        <div class="d-flex align-items-center"><b class="mr-3 p-2 bg-light border rounded text-center" style="width:40px">${op.id}</b> <div>${txt}</div></div>
+                    </label>
+                </div>`;
             });
         }
 
-        html += `</div></div></div>`; // Penutup Div Split Screen
+        html += `</div></div></div>`; 
         $('#kontainer-soal').html(html).hide().fadeIn(200);
         
         $('#btn-prev').prop('disabled', index === 0);
@@ -259,12 +396,12 @@
         $('.nomor-item').removeClass('active'); $(`#grid-btn-${nomor}`).addClass('active');
     }
 
+    // --- FUNGSI SIMPAN & LOGIKA LAIN ---
     function pilihJawaban(h) { JAWABAN_SISWA[CURRENT_INDEX + 1] = h; simpanKeLokal(); updateNavigasiUI(CURRENT_INDEX + 1); }
     function simpanIsian(t) { JAWABAN_SISWA[CURRENT_INDEX + 1] = t; simpanKeLokal(); updateNavigasiUI(CURRENT_INDEX + 1); }
     function simpanPGK(nom, idx, val) {
         let old = JAWABAN_SISWA[nom] ? JAWABAN_SISWA[nom].split("-") : Array(PAKET_SOAL[CURRENT_INDEX].opsi.length).fill("X");
-        old[idx] = val; JAWABAN_SISWA[nom] = old.join("-");
-        simpanKeLokal(); updateNavigasiUI(nom);
+        old[idx] = val; JAWABAN_SISWA[nom] = old.join("-"); simpanKeLokal(); updateNavigasiUI(nom);
     }
     function simpanKeLokal() {
         localStorage.setItem(`tka_${DATA_SISWA.nisn}_ans`, JSON.stringify(JAWABAN_SISWA));
@@ -293,7 +430,11 @@
             $.ajax({
                 url: API_URL, type: "POST", data: { action: "submit", data_jawaban: JSON.stringify(pl) }, dataType: "json",
                 success: function(resp) {
-                    if(resp.status === "OK") { alert("Terima Kasih! Jawaban Tersimpan."); localStorage.removeItem(`tka_${DATA_SISWA.nisn}_ans`); location.reload(); } else handleFail();
+                    if(resp.status === "OK") { 
+                        appAlert("Jawaban berhasil dikirim! Aplikasi akan dimuat ulang.", "success");
+                        localStorage.removeItem(`tka_${DATA_SISWA.nisn}_ans`); 
+                        setTimeout(() => location.reload(), 2000); 
+                    } else handleFail();
                 },
                 error: function() { if(attempt < maxAttempt) { $('#btn-kirim-server').text(`Gagal, mencoba lagi (${attempt})...`); setTimeout(doAjax, 2000); } else handleFail(); }
             });
