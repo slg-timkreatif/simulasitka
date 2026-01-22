@@ -11,7 +11,7 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
     <style>
-        /* GAYA ASLI DARI FILE UPLOAD (TIDAK SAYA UBAH) */
+        /* CSS ASLI (TIDAK DIUBAH, HANYA DIRAPIKAN) */
         body { background-color: #f0f3f5; font-family: 'Segoe UI', sans-serif; -webkit-user-select: none; user-select: none; }
         .header-top { background:#326698; height:100px; position:fixed; top:0; left:0; right:0; z-index:999; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
         .wrapper-login { margin-top: 130px; }
@@ -23,8 +23,7 @@
         .info-peserta-bar { position: fixed; top: 0; left: 0; right: 0; height: 50px; background: #212529; color: white; z-index: 1000; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.3); }
         .timer-badge { background: #2980b9; padding: 5px 15px; border-radius: 20px; font-weight: bold; border: 1px solid #fff; }
         
-        /* Modifikasi Card agar Wacana rapi */
-        .soal-card { border: none; box-shadow: 0 2px 5px rgba(0,0,0,0.05); min-height: 70vh; background:white; border-radius:5px; padding:20px; }
+        .soal-card { border: none; box-shadow: 0 2px 5px rgba(0,0,0,0.05); min-height: 70vh; background:white; border-radius:5px; padding:20px;}
         .soal-header { background: #fff; border-bottom: 2px solid #eee; padding: 15px 20px; margin-bottom:15px; }
         .soal-container { font-size: 18px; line-height: 1.6; }
         .soal-img-utama { max-width: 100%; height: auto; margin-bottom: 20px; border: 1px solid #ddd; border-radius: 5px; }
@@ -60,14 +59,16 @@
     <div class="container-fluid text-white header-top">
         <div class="row pt-3 pl-4 align-items-center">
             <div class="col-auto"><img src="https://pusmendik.kemdikbud.go.id/tka/images/logo-kemdikbud-71x72.png" height="60"></div>
-            <div class="col"><h4 class="m-0 font-weight-bold">SIMULASI TKA</h4><small>Kecamatan Selogiri - Tahun 2026</small></div>
+            <div class="col"><h4 class="m-0 font-weight-bold">SIMULASI TKA BERBASIS WEB</h4><small>Kecamatan Selogiri - Tahun 2026</small></div>
         </div>
     </div>
     <div class="container wrapper-login">
         <div class="row justify-content-center">
             <div class="col-md-6 mb-4 d-none d-md-block">
                 <div class="card-login d-flex flex-column justify-content-center align-items-center text-center" style="background: linear-gradient(135deg, #326698 0%, #2a527a 100%); color: white;">
-                    <i class="fas fa-user-graduate fa-5x mb-4"></i><h3>Selamat Datang</h3><p class="px-4">Silakan masukkan NISN dan Token Ujian.</p>
+                    <i class="fas fa-user-graduate fa-5x mb-4"></i>
+                    <h3>Selamat Datang</h3>
+                    <p class="px-4">Silakan masukkan NISN dan Token Ujian yang tertera di papan tulis untuk memulai sesi.</p>
                 </div>
             </div>
             <div class="col-md-6">
@@ -98,11 +99,10 @@
         <div class="row">
             <div class="col-md-9 mb-5">
                 <div class="card soal-card">
-                    <div class="soal-header"><div class="d-flex justify-content-between align-items-center"><h5 class="m-0 text-primary font-weight-bold">SOAL NO. <span id="no-soal-display" style="font-size: 1.2em;">1</span></h5><span class="badge badge-secondary p-2" id="tipe-soal">Pilihan Ganda</span></div></div>
+                    <div class="soal-header"><div class="d-flex justify-content-between align-items-center"><h5 class="m-0 text-primary font-weight-bold">SOAL NO. <span id="no-soal-display" style="font-size: 1.2em;">1</span></h5><span class="badge badge-secondary p-2" id="tipe-soal">PG</span></div></div>
                     <div class="soal-container" id="kontainer-soal"></div>
                 </div>
             </div>
-
             <div class="col-md-3 d-none d-md-block">
                 <div class="nav-panel">
                     <h6 class="font-weight-bold border-bottom pb-2">Daftar Soal</h6>
@@ -123,38 +123,15 @@
         <div class="container-fluid">
             <div class="row align-items-center">
                 <div class="col-4"><button class="btn btn-secondary shadow-sm" id="btn-prev" onclick="gantiSoal(-1)"><i class="fa fa-chevron-left mr-1"></i> Sebelumnya</button></div>
-                <div class="col-4 text-center">
-                    <span id="status-simpan" class="badge badge-success px-3 py-2" style="opacity:0; transition:0.5s"><i class="fas fa-save mr-1"></i> Tersimpan</span>
-                    <button class="btn btn-outline-dark btn-sm d-md-none ml-2" onclick="$('.col-md-3').toggleClass('d-none d-block')"><i class="fas fa-th"></i></button>
-                </div>
-                <div class="col-4 text-right">
-                    <button class="btn btn-primary shadow-sm" id="btn-next" onclick="gantiSoal(1)">Selanjutnya <i class="fa fa-chevron-right ml-1"></i></button>
-                    <button class="btn btn-danger shadow" id="btn-selesai" onclick="konfirmasiSelesai()" style="display:none;"><i class="fas fa-check-circle mr-1"></i> Selesai Ujian</button>
-                </div>
+                <div class="col-4 text-center"><span id="status-simpan" class="badge badge-success px-3 py-2" style="opacity:0; transition:0.5s"><i class="fas fa-save mr-1"></i> Tersimpan</span><button class="btn btn-outline-dark btn-sm d-md-none ml-2" onclick="$('.col-md-3').toggleClass('d-none d-block')"><i class="fas fa-th"></i></button></div>
+                <div class="col-4 text-right"><button class="btn btn-primary shadow-sm" id="btn-next" onclick="gantiSoal(1)">Selanjutnya <i class="fa fa-chevron-right ml-1"></i></button><button class="btn btn-danger shadow" id="btn-selesai" onclick="konfirmasiSelesai()" style="display:none;"><i class="fas fa-check-circle mr-1"></i> Selesai Ujian</button></div>
             </div>
         </div>
     </div>
 </div>
 
 <div class="modal fade" id="modalSelesai" tabindex="-1" role="dialog" data-backdrop="static">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header bg-primary text-white"><h5 class="modal-title">Konfirmasi Selesai</h5></div>
-            <div class="modal-body">
-                <p>Apakah Anda yakin ingin mengakhiri ujian ini?</p>
-                <div class="alert alert-warning small"><i class="fas fa-exclamation-triangle mr-1"></i> Pastikan tidak ada jawaban yang masih berwarna <b>Kuning (Ragu-ragu)</b>.</div>
-                <div class="emergency-box" id="box-darurat">
-                    <h6 class="font-weight-bold text-danger"><i class="fas fa-wifi"></i> KONEKSI GAGAL!</h6>
-                    <p class="small mb-2">Jangan panik. Sistem gagal mengirim data ke server. Silakan <b>FOTO KODE DI BAWAH INI</b> dan tunjukkan ke Pengawas/Guru.</p>
-                    <textarea class="form-control font-weight-bold text-monospace" rows="4" id="kode-penyelamat" readonly style="font-size:12px; background:#eee;"></textarea>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Kembali</button>
-                <button type="button" class="btn btn-success" id="btn-kirim-server" onclick="kirimJawaban()">Ya, Selesai</button>
-            </div>
-        </div>
-    </div>
+    <div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header bg-primary text-white"><h5 class="modal-title">Konfirmasi Selesai</h5></div><div class="modal-body"><p>Apakah Anda yakin ingin mengakhiri ujian ini?</p><div class="alert alert-warning small"><i class="fas fa-exclamation-triangle mr-1"></i> Pastikan tidak ada jawaban yang masih berwarna <b>Kuning (Ragu-ragu)</b>.</div><div class="emergency-box" id="box-darurat"><h6 class="font-weight-bold text-danger"><i class="fas fa-wifi"></i> KONEKSI GAGAL!</h6><p class="small mb-2">Jangan panik. Sistem gagal mengirim data ke server. Silakan <b>FOTO KODE DI BAWAH INI</b> dan tunjukkan ke Pengawas/Guru.</p><textarea class="form-control font-weight-bold text-monospace" rows="4" id="kode-penyelamat" readonly style="font-size:12px; background:#eee;"></textarea></div></div><div class="modal-footer"><button type="button" class="btn btn-secondary" data-dismiss="modal">Kembali Mengerjakan</button><button type="button" class="btn btn-success" id="btn-kirim-server" onclick="kirimJawaban()">Ya, Selesai</button></div></div></div>
 </div>
 
 <script>
@@ -167,8 +144,7 @@
     let DATA_SISWA = {}, PAKET_SOAL = [], JAWABAN_SISWA = {}, RAGU_RAGU = {}, CURRENT_INDEX = 0, TIMER_INTERVAL;
     
     function prosesLogin() {
-        let nisn = $('#input-nisn').val().trim();
-        let token = $('#input-token').val().trim();
+        let nisn = $('#input-nisn').val().trim(), token = $('#input-token').val().trim();
         if(!nisn || !token) { alert("NISN dan Token harus diisi!"); return; }
         $('#loader').css('display', 'flex'); $('#loader-text').text('Memeriksa Data Peserta...');
 
@@ -177,10 +153,10 @@
             success: function(resp) {
                 if(resp.status === "SUKSES") {
                     DATA_SISWA = resp.data;
-                    // --- SIMPAN INFO WAKTU SERVER & PAKET ---
+                    // Simpan Info Penting
                     DATA_SISWA.kode_mapel = resp.data.kode_mapel;
                     DATA_SISWA.kode_paket = resp.data.kode_paket;
-                    DATA_SISWA.deadline = resp.data.deadline_server; // Deadline Absolut
+                    DATA_SISWA.deadline = resp.data.deadline_server; // INI WAKTU ABSOLUT
                     
                     PAKET_SOAL = resp.data.soal;
                     localStorage.setItem('current_nisn', DATA_SISWA.nisn);
@@ -194,11 +170,10 @@
     function siapkanUjian() {
         $('#view-login').fadeOut(500, function() { $('#view-ujian').fadeIn(); }); $('#loader').fadeOut();
         $('#nama-siswa-display').text(DATA_SISWA.nama); $('#sekolah-display').text(DATA_SISWA.sekolah);
-        $('#label-mapel').text(DATA_SISWA.mapel + " (" + DATA_SISWA.kode_paket + ")");
+        $('#label-mapel').text(DATA_SISWA.mapel + " (" + DATA_SISWA.kode_paket + ")"); // Nama Mapel Otomatis
 
         restoreSesiLokal(); renderNavigasi(); tampilkanSoal(0);
-        
-        // --- JALANKAN TIMER ABSOLUT ---
+        // Timer Server Absolut
         mulaiTimerAbsolut(DATA_SISWA.deadline); 
     }
 
@@ -206,15 +181,10 @@
         TIMER_INTERVAL = setInterval(function() {
             let now = new Date().getTime();
             let distance = deadlineMillis - now; // Selisih Deadline vs Waktu Sekarang
-
             if (distance < 0) {
-                clearInterval(TIMER_INTERVAL);
-                $('#timer-display').text("00:00:00");
-                alert("WAKTU HABIS! Jawaban akan dikirim otomatis.");
-                kirimJawaban();
-                return;
+                clearInterval(TIMER_INTERVAL); $('#timer-display').text("00:00:00");
+                alert("WAKTU HABIS! Jawaban akan dikirim otomatis."); kirimJawaban(); return;
             }
-
             let h = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
             let m = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
             let s = Math.floor((distance % (1000 * 60)) / 1000);
@@ -227,56 +197,62 @@
         CURRENT_INDEX = index; let soal = PAKET_SOAL[index], nomor = index + 1;
         $('#no-soal-display').text(nomor);
         
-        // --- DETEKSI TIPE SOAL ---
         let labelTipe = "Pilihan Ganda";
         if(soal.tipe === 'BS') labelTipe = "Benar / Salah";
         else if(soal.tipe === 'ISIAN') labelTipe = "Isian Singkat";
         else if(soal.tipe.startsWith('PGK')) labelTipe = "PG Kompleks";
         $('#tipe-soal').text(labelTipe);
 
-        // --- RENDER WACANA (SPLIT SCREEN) ---
+        // --- SPLIT SCREEN WACANA / GAMBAR ---
         let html = '';
         if(soal.wacana && soal.wacana.trim() !== "") {
-            html += `<div class="row"><div class="col-md-6 mb-3"><div class="card bg-light border-info h-100"><div class="card-header bg-info text-white py-1 small font-weight-bold"><i class="fas fa-book-open mr-2"></i>WACANA</div><div class="card-body" style="max-height:400px;overflow-y:auto;font-size:16px;line-height:1.6">${soal.wacana}</div></div></div><div class="col-md-6">`;
-        } else { html += `<div>`; }
+            let isiWacana = soal.wacana;
+            // Deteksi Link Gambar (jpg, png, dll)
+            if (isiWacana.match(/^http.*\.(jpg|jpeg|png|gif|webp)$/i)) {
+                isiWacana = `<div class="text-center"><img src="${isiWacana}" class="img-fluid" style="width:100%; border-radius:5px; border:1px solid #ddd;"></div>`;
+            }
+            // Layout Split (Kiri Wacana - Kanan Soal)
+            html += `<div class="row"><div class="col-md-6 mb-3"><div class="card bg-light border-info h-100"><div class="card-header bg-info text-white py-1 small font-weight-bold"><i class="fas fa-book-open mr-2"></i>WACANA / INFO SOAL</div><div class="card-body" style="max-height:500px; overflow-y:auto;">${isiWacana}</div></div></div><div class="col-md-6">`;
+        } else {
+            html += `<div>`; // Div Pembungkus Normal
+        }
 
-        // --- RENDER GAMBAR & SOAL ---
+        // --- KONTEN SOAL ---
         if(soal.gambar) html += `<div class="text-center mb-3"><img src="${soal.gambar}" class="soal-img-utama"></div>`;
         html += `<div class="mb-4 font-weight-bold">${soal.text}</div><div class="opsi-block">`;
 
-        // --- RENDER OPSI JAWABAN ---
+        // --- OPSI JAWABAN ---
         if (soal.tipe === 'ISIAN') {
             let val = JAWABAN_SISWA[nomor] || "";
-            html += `<div class="form-group"><textarea class="form-control" rows="4" style="font-size:18px; border:2px solid #ccc;" onkeyup="simpanIsian(this.value)">${val}</textarea></div>`;
+            html += `<div class="form-group"><textarea class="form-control" rows="4" placeholder="Ketik jawaban..." style="font-size:18px; border:2px solid #ccc;" onkeyup="simpanIsian(this.value)">${val}</textarea></div>`;
         } 
         else if (soal.tipe.startsWith('PGK')) {
-            // DETEKSI HEADER DINAMIS PGK(S,TS)
+            // JUDUL KOLOM DINAMIS (Sesuai, Tidak Sesuai, dll)
             let h1="Benar", h2="Salah", v1="B", v2="S";
-            let match = soal.tipe.match(/PGK\((.+),(.+)\)/);
+            let match = soal.tipe.match(/PGK\((.+),(.+)\)/); // Regex: PGK(S,TS)
             if(match) { h1=match[1].trim(); h2=match[2].trim(); v1=h1; v2=h2; }
 
             let savedAns = (JAWABAN_SISWA[nomor] || "").split("-");
             html += `<table class="table table-bordered table-sm"><thead class="thead-light"><tr><th>Pernyataan</th><th width="80" class="text-center">${h1}</th><th width="80" class="text-center">${h2}</th></tr></thead><tbody>`;
             soal.opsi.forEach((op, idx) => {
-                let val = savedAns[idx] || "X", c1 = (val === v1) ? "checked" : "", c2 = (val === v2) ? "checked" : "";
-                html += `<tr><td class="align-middle px-3">${op.val}</td><td class="text-center"><input type="radio" name="pgk_${nomor}_${idx}" class="radio-custom" onclick="simpanPGK(${nomor}, ${idx}, '${v1}')" ${c1}></td><td class="text-center"><input type="radio" name="pgk_${nomor}_${idx}" class="radio-custom" onclick="simpanPGK(${nomor}, ${idx}, '${v2}')" ${c2}></td></tr>`;
+                let val = savedAns[idx] || "X", c1=(val===v1)?'checked':'', c2=(val===v2)?'checked':'';
+                html += `<tr><td class="align-middle px-3">${op.val}</td><td class="text-center"><input type="radio" name="pgk_${nomor}_${idx}" class="radio-custom" onclick="simpanPGK(${nomor},${idx},'${v1}')" ${c1}></td><td class="text-center"><input type="radio" name="pgk_${nomor}_${idx}" class="radio-custom" onclick="simpanPGK(${nomor},${idx},'${v2}')" ${c2}></td></tr>`;
             });
             html += `</tbody></table>`;
         } 
-        else { // PILIHAN GANDA & BS
+        else { // TIPE PILIHAN GANDA & BENAR SALAH
             let opsiBS = [{id: "A", val: "BENAR"}, {id: "B", val: "SALAH"}];
-            let ops = (soal.tipe === 'BS') ? opsiBS : soal.opsi;
-            ops.forEach(op => {
+            let listOpsi = (soal.tipe === 'BS') ? opsiBS : soal.opsi;
+            listOpsi.forEach(op => {
                 let isChecked = (JAWABAN_SISWA[nomor] === op.id) ? 'checked' : '';
                 let txt = op.val.match(/^http/) ? `<img src="${op.val}" style="max-height:150px">` : op.val;
                 html += `<div class="d-flex align-items-start mb-3"><div class="pt-1"><input type="radio" name="jw" class="radio-custom" onclick="pilihJawaban('${op.id}')" ${isChecked}></div><label class="label-opsi ml-2 w-100"><div class="d-flex align-items-center"><b class="mr-3 p-2 bg-light border rounded text-center" style="width:40px">${op.id}</b> <div>${txt}</div></div></label></div>`;
             });
         }
 
-        html += `</div></div></div>`; // Penutup Div Wacana
+        html += `</div></div></div>`; // Penutup Div Split Screen
         $('#kontainer-soal').html(html).hide().fadeIn(200);
         
-        // Update Navigasi
         $('#btn-prev').prop('disabled', index === 0);
         if (index === PAKET_SOAL.length - 1) { $('#btn-next').hide(); $('#btn-selesai').show(); } else { $('#btn-next').show(); $('#btn-selesai').hide(); }
         $('#check-ragu').prop('checked', RAGU_RAGU[nomor] || false);
@@ -301,9 +277,11 @@
         let el = $(`#grid-btn-${n}`); el.removeClass('answered ragu');
         if (RAGU_RAGU[n]) el.addClass('ragu'); else if (JAWABAN_SISWA[n]) el.addClass('answered');
     }
-    function restoreSesiLokal() {
-        let s = localStorage.getItem(`tka_${DATA_SISWA.nisn}_ans`); if(s) JAWABAN_SISWA = JSON.parse(s);
+    function renderNavigasi() {
+        let h = ''; PAKET_SOAL.forEach((s, i) => { let num = i + 1; h += `<div class="nomor-item" id="grid-btn-${num}" onclick="lompatSoal(${num})">${num}</div>`; });
+        $('#grid-nomor').html(h); PAKET_SOAL.forEach((s, i) => updateNavigasiUI(i + 1));
     }
+    function restoreSesiLokal() { let s = localStorage.getItem(`tka_${DATA_SISWA.nisn}_ans`); if(s) JAWABAN_SISWA = JSON.parse(s); }
     function konfirmasiSelesai() { $('#modalSelesai').modal('show'); $('#box-darurat').hide(); $('#btn-kirim-server').show().text('Ya, Selesai').prop('disabled', false); }
     
     function kirimJawaban() {
@@ -320,16 +298,11 @@
                 error: function() { if(attempt < maxAttempt) { $('#btn-kirim-server').text(`Gagal, mencoba lagi (${attempt})...`); setTimeout(doAjax, 2000); } else handleFail(); }
             });
         }
-        function handleFail() { let kodeAman = btoa(JSON.stringify(pl)); $('#kode-penyelamat').val(kodeAman); $('#box-darurat').slideDown(); $('#btn-kirim-server').hide(); }
+        function handleFail() { let kode = btoa(JSON.stringify(pl)); $('#kode-penyelamat').val(kode); $('#box-darurat').slideDown(); $('#btn-kirim-server').hide(); }
         doAjax(); 
     }
     function ubahFont(s) { $('.soal-container').css('font-size', s + 'px'); }
-    function renderNavigasi() {
-        let h = ''; PAKET_SOAL.forEach((s, i) => { let num = i + 1; h += `<div class="nomor-item" id="grid-btn-${num}" onclick="lompatSoal(${num})">${num}</div>`; });
-        $('#grid-nomor').html(h); PAKET_SOAL.forEach((s, i) => updateNavigasiUI(i + 1));
-    }
     window.onbeforeunload = function() { if ($('#view-ujian').is(":visible")) return "Ujian sedang berlangsung."; };
 </script>
-
 </body>
 </html>
