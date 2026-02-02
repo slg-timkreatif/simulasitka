@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personal Page - Komunitas Guru Berbagi</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f8f9fc; color: #2c3e50; }
+        
+        /* NAVBAR */
+        .navbar-brand img { height: 40px; }
+        .bg-white-glass { background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); border-bottom: 1px solid #eee; }
+
+        /* HERO PROFILE */
+        .hero-section {
+            background: linear-gradient(135deg, #0d6efd 0%, #0099ff 100%);
+            padding-top: 100px; padding-bottom: 80px; text-align: center; color: white;
+            border-radius: 0 0 50px 50px; margin-bottom: 60px;
+        }
+        .profile-img-container {
+            margin-top: -50px; margin-bottom: 20px;
+        }
+        .profile-img {
+            width: 160px; height: 160px; border-radius: 50%; border: 6px solid #fff;
+            object-fit: cover; box-shadow: 0 10px 30px rgba(0,0,0,0.15); background: white;
+        }
+
+        /* TABS */
+        .nav-custom { justify-content: center; margin-bottom: 30px; border: none; }
+        .nav-custom .nav-link {
+            color: #666; font-weight: 600; padding: 10px 30px; border-radius: 50px;
+            background: white; border: 1px solid #eee; margin: 0 5px;
+        }
+        .nav-custom .nav-link.active {
+            background: #0d6efd; color: white; border-color: #0d6efd; box-shadow: 0 5px 15px rgba(13, 110, 253, 0.3);
+        }
+
+        /* CARDS */
+        .blog-card {
+            border: none; border-radius: 20px; overflow: hidden; background: white;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05); transition: all 0.3s; height: 100%;
+        }
+        .blog-card:hover { transform: translateY(-5px); box-shadow: 0 15px 30px rgba(0,0,0,0.1); }
+        .blog-img-top { height: 200px; object-fit: cover; }
+        .blog-badge { position: absolute; top: 15px; left: 15px; background: rgba(0,0,0,0.7); color: white; padding: 4px 12px; border-radius: 30px; font-size: 11px; text-transform: uppercase; font-weight: bold; }
+
+        .res-item {
+            background: white; padding: 20px; border-radius: 15px; border: 1px solid #eee;
+            display: flex; align-items: center; margin-bottom: 15px; text-decoration: none; color: #333; transition: 0.2s;
+        }
+        .res-item:hover { border-color: #0d6efd; background: #f0f7ff; }
+        .res-icon { font-size: 24px; margin-right: 20px; width: 50px; height: 50px; background: #f8f9fc; border-radius: 12px; display: flex; align-items: center; justify-content: center; }
+
+        /* FOOTER */
+        footer { background: white; border-top: 1px solid #eee; padding: 40px 0; margin-top: 80px; }
+    </style>
+</head>
+<body>
+
+<nav class="navbar fixed-top bg-white-glass shadow-sm">
+    <div class="container d-flex justify-content-center justify-content-md-between">
+        <a class="navbar-brand d-flex align-items-center" href="#">
+            <img src="https://raw.githubusercontent.com/slg-timkreatif/app/refs/heads/main/1768315347206.png" alt="Logo">
+            <span class="ms-2 fw-bold text-dark d-none d-md-block" style="font-size: 18px;">Komunitas Guru Berbagi</span>
+        </a>
+        <a href="admin.html" class="btn btn-sm btn-outline-primary rounded-pill px-3">Masuk Anggota</a>
+    </div>
+</nav>
+
+<div id="main-content" style="display:none;">
+    
+    <div class="hero-section">
+        <div class="container pt-5">
+            <h1 class="fw-bold mb-0" id="pNama">...</h1>
+            <p class="opacity-75 mb-0" style="font-size: 18px;"><span id="pJabatan">Guru</span> @ <span id="pSekolah">...</span></p>
+        </div>
+    </div>
+
+    <div class="container" style="max-width: 900px;">
+        <div class="text-center profile-img-container">
+            <img id="pFoto" src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" class="profile-img">
+            <div class="mt-3 mx-auto text-secondary" style="max-width: 600px; font-size: 15px; line-height: 1.6;" id="pBio">...</div>
+            <div class="mt-3" id="pSosmed"></div>
+        </div>
+
+        <ul class="nav nav-pills nav-custom mt-5" id="pills-tab" role="tablist">
+            <li class="nav-item"><button class="nav-link active" data-bs-toggle="pill" data-bs-target="#view-blog">📰 Berita & Cerita</button></li>
+            <li class="nav-item"><button class="nav-link" data-bs-toggle="pill" data-bs-target="#view-arsip">📂 Arsip Dokumen</button></li>
+        </ul>
+
+        <div class="tab-content">
+            <div class="tab-pane fade show active" id="view-blog">
+                <div class="row g-4" id="area-blog">
+                    </div>
+                <div id="empty-blog" class="text-center py-5 d-none">
+                    <i class="fas fa-feather fa-3x text-light mb-3"></i>
+                    <p class="text-muted">Belum ada artikel yang dipublikasikan.</p>
+                </div>
+            </div>
+
+            <div class="tab-pane fade" id="view-arsip">
+                <div id="area-resource">
+                    </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="text-center">
+        <div class="container">
+            <img src="https://raw.githubusercontent.com/slg-timkreatif/app/refs/heads/main/1768315347206.png" width="40" class="mb-3 opacity-50">
+            <h6 class="fw-bold mb-1" id="footerNama">Guru</h6>
+            <p class="small text-muted mb-3" id="footerSekolah">Sekolah</p>
+            <hr class="w-25 mx-auto opacity-25">
+            <small class="text-secondary">&copy; <span id="thn"></span> Komunitas Guru Berbagi. All Rights Reserved.</small>
+        </div>
+    </footer>
+</div>
+
+<div id="loading" class="position-fixed top-0 start-0 w-100 h-100 bg-white d-flex flex-column justify-content-center align-items-center" style="z-index:9999;">
+    <div class="spinner-border text-primary" role="status"></div>
+    <p class="mt-3 fw-bold text-secondary">Memuat Halaman...</p>
+</div>
+
+<div class="modal fade" id="modalArtikel" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content border-0 rounded-4">
+            <div class="modal-header border-0 pb-0">
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body px-4 px-md-5 pb-5">
+                <span class="badge bg-primary bg-opacity-10 text-primary mb-2" id="modKat">Kategori</span>
+                <h2 class="fw-bold mb-2" id="modJudul">Judul</h2>
+                <p class="text-muted small mb-4"><i class="far fa-clock me-1"></i> <span id="modWaktu">...</span></p>
+                <img id="modImg" src="" class="w-100 rounded-3 mb-4 shadow-sm object-fit-cover" style="max-height: 400px;">
+                <div id="modIsi" class="lh-lg text-secondary" style="white-space: pre-wrap; text-align: justify;">...</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // ================= URL BACKEND =================
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyFrBj17fxpQMn44Y4LRORn2yc3HPqvhcLmQfsmmRbhZI471KHGK2UKFjEXIlC7Gv_jTA/exec"; 
+    // ===============================================
+
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get('id');
+
+    if(id) {
+        fetch(SCRIPT_URL + "?id=" + id)
+        .then(r => r.json())
+        .then(d => {
+            if(d.status === "found") renderPage(d.data);
+            else {
+                alert("Halaman Guru tidak ditemukan.");
+                document.getElementById('loading').style.display = 'none';
+            }
+        });
+    } else { alert("Link tidak valid (ID missing)."); }
+
+    function renderPage(data) {
+        // 1. Profil Hero
+        document.getElementById('pNama').innerText = data.nama;
+        document.getElementById('pSekolah').innerText = data.sekolah;
+        document.getElementById('pJabatan').innerText = data.jabatan;
+        document.getElementById('pBio').innerText = data.bio || "";
+        if(data.foto) document.getElementById('pFoto').src = data.foto;
+
+        // Sosmed
+        let s = "";
+        if(data.wa) s += `<a href="https://wa.me/${data.wa}" class="btn btn-success btn-sm rounded-pill me-1"><i class="fab fa-whatsapp"></i> WA</a>`;
+        if(data.ig) s += `<a href="https://instagram.com/${data.ig}" class="btn btn-danger btn-sm rounded-pill me-1"><i class="fab fa-instagram"></i> IG</a>`;
+        if(data.linkedin) s += `<a href="${data.linkedin}" class="btn btn-primary btn-sm rounded-pill me-1"><i class="fab fa-linkedin"></i> In</a>`;
+        document.getElementById('pSosmed').innerHTML = s;
+
+        // 2. Footer Dinamis (Personalisasi)
+        document.getElementById('footerNama').innerText = data.nama;
+        document.getElementById('footerSekolah').innerText = data.sekolah;
+        document.getElementById('thn').innerText = new Date().getFullYear();
+
+        // 3. Blog Render
+        let blogs = data.blog || [];
+        if(blogs.length === 0) document.getElementById('empty-blog').classList.remove('d-none');
+        else {
+            let html = "";
+            blogs.forEach((b, idx) => {
+                let prev = b.konten.length > 90 ? b.konten.substring(0, 90) + "..." : b.konten;
+                let tgl = new Date(b.waktu).toLocaleDateString('id-ID', {day:'numeric', month:'short', year:'numeric'});
+                
+                html += `
+                <div class="col-md-6 col-lg-4">
+                    <div class="blog-card position-relative" style="cursor:pointer" onclick="bukaModal(${idx})">
+                        <span class="blog-badge">${b.kategori}</span>
+                        <img src="${b.gambar}" class="blog-img-top w-100">
+                        <div class="p-4">
+                            <small class="text-muted d-block mb-1">${tgl}</small>
+                            <h5 class="fw-bold text-dark lh-sm mb-2">${b.judul}</h5>
+                            <p class="text-secondary small mb-3">${prev}</p>
+                            <span class="text-primary fw-bold small">Baca Selengkapnya <i class="fas fa-arrow-right ms-1"></i></span>
+                        </div>
+                    </div>
+                </div>`;
+            });
+            document.getElementById('area-blog').innerHTML = html;
+            window.blogData = blogs;
+        }
+
+        // 4. Arsip Render
+        let res = [];
+        try { res = JSON.parse(data.resources); } catch(e){}
+        let htmlRes = "";
+        res.forEach(r => {
+            let icon = "fa-link text-primary";
+            if(r.tipe == "dokumen") icon = "fa-file-pdf text-danger";
+            if(r.tipe == "video") icon = "fa-play-circle text-danger";
+            if(r.tipe == "folder") icon = "fa-folder text-warning";
+            
+            htmlRes += `
+            <a href="${r.url}" target="_blank" class="res-item">
+                <div class="res-icon"><i class="fas ${icon}"></i></div>
+                <div class="flex-grow-1">
+                    <h6 class="fw-bold mb-0">${r.judul}</h6>
+                    <small class="text-muted text-uppercase" style="font-size:11px;">${r.tipe}</small>
+                </div>
+                <i class="fas fa-chevron-right text-muted opacity-50"></i>
+            </a>`;
+        });
+        document.getElementById('area-resource').innerHTML = htmlRes;
+
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('main-content').style.display = 'block';
+    }
+
+    function bukaModal(idx) {
+        let b = window.blogData[idx];
+        document.getElementById('modKat').innerText = b.kategori;
+        document.getElementById('modJudul').innerText = b.judul;
+        document.getElementById('modWaktu').innerText = new Date(b.waktu).toLocaleDateString('id-ID', {weekday:'long', day:'numeric', month:'long'});
+        document.getElementById('modImg').src = b.gambar;
+        document.getElementById('modIsi').innerText = b.konten;
+        new bootstrap.Modal(document.getElementById('modalArtikel')).show();
+    }
+</script>
+</body>
+</html>
